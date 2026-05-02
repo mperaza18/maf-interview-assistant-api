@@ -67,6 +67,9 @@ public class InterviewApiIntegrationTests : IClassFixture<WebApplicationFactory<
         var response = await _client.PostAsJsonAsync("/api/interview/plan", request);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var body = await response.Content.ReadFromJsonAsync<InterviewPlan>();
+        Assert.NotNull(body);
+        Assert.NotEmpty(body!.Rounds);
     }
 
     [Fact, Trait("Category", "Integration")]
@@ -90,6 +93,9 @@ public class InterviewApiIntegrationTests : IClassFixture<WebApplicationFactory<
         var response = await _client.PostAsJsonAsync("/api/interview/plan/revise", request);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var body = await response.Content.ReadFromJsonAsync<InterviewPlan>();
+        Assert.NotNull(body);
+        Assert.NotEmpty(body!.Rounds);
     }
 
     [Fact, Trait("Category", "Integration")]
