@@ -65,7 +65,8 @@ public class InterviewControllerTests
             CancellationToken.None);
 
         var ok = Assert.IsType<OkObjectResult>(result);
-        Assert.IsType<InterviewPlan>(ok.Value);
+        var responsePlan = Assert.IsType<InterviewPlan>(ok.Value);
+        Assert.Equal("Engineer", responsePlan.Role);
     }
 
     [Fact]
