@@ -6,8 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // ─── Services ─────────────────────────────────────────────────────────────────
 builder.Services.AddControllers();
 
-// Register InterviewService as a singleton — agents are thread-safe and
-// expensive to construct (one per process is appropriate for a demo/dev setup).
+// Agents are thread-safe and expensive to construct — singletons are appropriate for a demo/dev setup.
 builder.Services.AddSingleton<IAgentRunner, JsonAgentRunner>();
 builder.Services.AddSingleton<IInterviewService, InterviewService>();
 

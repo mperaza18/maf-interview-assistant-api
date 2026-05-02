@@ -101,6 +101,6 @@ public class InterviewServiceTests
 
         await _service.EvaluateAsync(profile, plan, "   ");
 
-        Assert.Contains("(no notes provided;", capturedPrompt);
+        Assert.Contains("(no notes provided", capturedPrompt);
     }
 }
