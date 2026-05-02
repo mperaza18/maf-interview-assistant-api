@@ -10,10 +10,10 @@ namespace InterviewAssistant.Api.Controllers;
 [Produces("application/json")]
 public sealed class InterviewController : ControllerBase
 {
-    private readonly InterviewService _service;
+    private readonly IInterviewService _service;
     private readonly ILogger<InterviewController> _logger;
 
-    public InterviewController(InterviewService service, ILogger<InterviewController> logger)
+    public InterviewController(IInterviewService service, ILogger<InterviewController> logger)
     {
         _service = service;
         _logger = logger;
