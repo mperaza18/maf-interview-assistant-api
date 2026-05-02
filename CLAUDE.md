@@ -15,9 +15,26 @@ dotnet build
 dotnet restore
 ```
 
-There are no automated tests in this repo yet.
-
 Swagger UI is served at `http://localhost:5000` when running in Development mode (the default for `dotnet run`).
+
+## Testing
+
+```bash
+# Run all unit tests (no Azure credentials needed)
+dotnet test tests/InterviewAssistant.Api.Tests/
+
+# Run unit tests with coverage report
+dotnet test tests/InterviewAssistant.Api.Tests/ \
+  --collect:"XPlat Code Coverage" \
+  --results-directory ./coverage
+
+# Run integration tests (requires appsettings.Development.json with real Azure config)
+dotnet test tests/InterviewAssistant.Api.IntegrationTests/ \
+  --filter "Category=Integration" \
+  --logger "console;verbosity=normal"
+```
+
+Integration tests are excluded from CI — they live in a separate project and require live Azure OpenAI credentials.
 
 ## Configuration
 
