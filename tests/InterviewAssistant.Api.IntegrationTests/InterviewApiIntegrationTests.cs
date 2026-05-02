@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http.Json;
-using InterviewAssistant.Api.Controllers;
 using InterviewAssistant.Api.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

@@ -121,11 +121,3 @@ public sealed class InterviewController : ControllerBase
         Status = StatusCodes.Status400BadRequest
     };
 }
-
-// ─── Response DTOs ────────────────────────────────────────────────────────────
-
-public sealed class AnalyzeResumeResponse
-{
-    public ResumeProfile Profile { get; set; } = new();
-    public SeniorityAssessment Seniority { get; set; } = new();
-}
