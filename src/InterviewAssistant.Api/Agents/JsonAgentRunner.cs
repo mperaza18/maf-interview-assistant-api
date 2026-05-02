@@ -18,8 +18,11 @@ public static class JsonAgentRunner
         CancellationToken cancellationToken = default)
     {
         var result = await agent.RunAsync(prompt, cancellationToken: cancellationToken);
-        var raw = result.Text.Trim();
+        return ParseJson<T>(result.Text.Trim());
+    }
 
+    internal static (T Value, string Raw) ParseJson<T>(string raw)
+    {
         try
         {
             var value = JsonSerializer.Deserialize<T>(raw, JsonOptions)
