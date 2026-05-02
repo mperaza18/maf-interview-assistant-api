@@ -45,9 +45,11 @@ public class InterviewServiceTests
                .Callback<AIAgent, string, CancellationToken>((_, _, _) => callOrder.Add("seniority"))
                .ReturnsAsync((new SeniorityAssessment { Level = "Senior" }, "{}"));
 
-        await _service.AnalyzeResumeAsync("resume text", "Engineer");
+        var (profile, seniority) = await _service.AnalyzeResumeAsync("resume text", "Engineer");
 
         Assert.Equal(new[] { "ingestion", "seniority" }, callOrder);
+        Assert.Equal("Jane", profile.CandidateName);
+        Assert.Equal("Senior", seniority.Level);
     }
 
     [Fact]
@@ -65,8 +67,8 @@ public class InterviewServiceTests
         await _service.GeneratePlanAsync(profile, seniority, "Engineer");
 
         Assert.Contains("Engineer", capturedPrompt);
-        Assert.Contains("Jane", capturedPrompt);
-        Assert.Contains("Senior", capturedPrompt);
+        Assert.Contains("\"candidateName\":\"Jane\"", capturedPrompt);
+        Assert.Contains("\"level\":\"Senior\"", capturedPrompt);
     }
 
     [Fact]
@@ -99,6 +101,6 @@ public class InterviewServiceTests
 
         await _service.EvaluateAsync(profile, plan, "   ");
 
-        Assert.Contains("(no notes provided", capturedPrompt);
+        Assert.Contains("(no notes provided;", capturedPrompt);
     }
 }
