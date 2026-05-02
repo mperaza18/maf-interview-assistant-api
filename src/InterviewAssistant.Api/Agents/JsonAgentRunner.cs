@@ -29,6 +29,10 @@ public static class JsonAgentRunner
                         ?? throw new JsonException("Deserialized null");
             return (value, raw);
         }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             throw new InvalidOperationException(
