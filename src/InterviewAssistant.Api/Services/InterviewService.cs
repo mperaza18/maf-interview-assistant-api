@@ -8,12 +8,13 @@ using Microsoft.Extensions.AI;
 
 namespace InterviewAssistant.Api.Services;
 
-public sealed class InterviewService
+public sealed class InterviewService : IInterviewService
 {
     private readonly AIAgent _ingestionAgent;
     private readonly AIAgent _seniorityAgent;
     private readonly AIAgent _plannerAgent;
     private readonly AIAgent _evaluatorAgent;
+    private readonly IAgentRunner _runner;
 
     private static readonly JsonSerializerOptions _jsonOptions = new()
     {
@@ -21,8 +22,9 @@ public sealed class InterviewService
         WriteIndented = false
     };
 
-    public InterviewService(IConfiguration config)
+    public InterviewService(IConfiguration config, IAgentRunner runner)
     {
+        _runner = runner;
         _ingestionAgent = AgentFactory.CreateAzureOpenAIAgent("ResumeIngestion", AgentPrompts.ResumeIngestion, config);
         _seniorityAgent = AgentFactory.CreateAzureOpenAIAgent("SeniorityClassifier", AgentPrompts.SeniorityClassifier, config);
         _plannerAgent = AgentFactory.CreateAzureOpenAIAgent("InterviewPlanner", AgentPrompts.InterviewPlanner, config);
@@ -40,10 +42,10 @@ public sealed class InterviewService
         CancellationToken ct = default)
     {
         var ingestPrompt = $"{AgentPrompts.ResumeIngestion}\n\nRESUME:\n{resumeText}";
-        var (profile, _) = await JsonAgentRunner.RunJsonAsync<ResumeProfile>(_ingestionAgent, ingestPrompt, ct);
+        var (profile, _) = await _runner.RunJsonAsync<ResumeProfile>(_ingestionAgent, ingestPrompt, ct);
 
         var seniorityPrompt = $"{AgentPrompts.SeniorityClassifier}\n\nRESUME_PROFILE:\n{Serialize(profile)}";
-        var (seniority, _) = await JsonAgentRunner.RunJsonAsync<SeniorityAssessment>(_seniorityAgent, seniorityPrompt, ct);
+        var (seniority, _) = await _runner.RunJsonAsync<SeniorityAssessment>(_seniorityAgent, seniorityPrompt, ct);
 
         return (profile, seniority);
     }
@@ -72,7 +74,7 @@ public sealed class InterviewService
             .AppendLine(Serialize(seniority))
             .ToString();
 
-        var (plan, _) = await JsonAgentRunner.RunJsonAsync<InterviewPlan>(_plannerAgent, planPrompt, ct);
+        var (plan, _) = await _runner.RunJsonAsync<InterviewPlan>(_plannerAgent, planPrompt, ct);
         return plan;
     }
 
@@ -93,7 +95,7 @@ public sealed class InterviewService
         var (plannerRaw, _) = await InterviewWorkflowRunner.RunPlanWorkflowAsync(
             _ingestionAgent, _seniorityAgent, _plannerAgent, input, ct);
 
-        var (plan, _) = await JsonAgentRunner.RunJsonAsync<InterviewPlan>(
+        var (plan, _) = await _runner.RunJsonAsync<InterviewPlan>(
             _plannerAgent,
             $"Reformat this EXACT content as a single valid InterviewPlan JSON (no markdown):\n\n{plannerRaw}",
             ct);
@@ -120,7 +122,7 @@ Return ONLY valid InterviewPlan JSON.
 {Serialize(plan)}
 """;
 
-        var (revised, _) = await JsonAgentRunner.RunJsonAsync<InterviewPlan>(_plannerAgent, revisePrompt, ct);
+        var (revised, _) = await _runner.RunJsonAsync<InterviewPlan>(_plannerAgent, revisePrompt, ct);
         return revised;
     }
 
@@ -152,7 +154,7 @@ Return ONLY valid InterviewPlan JSON.
             .AppendLine(effectiveNotes)
             .ToString();
 
-        var (evaluation, _) = await JsonAgentRunner.RunJsonAsync<EvaluationResult>(_evaluatorAgent, evalPrompt, ct);
+        var (evaluation, _) = await _runner.RunJsonAsync<EvaluationResult>(_evaluatorAgent, evalPrompt, ct);
         return evaluation;
     }
 

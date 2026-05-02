@@ -3,7 +3,7 @@ using Microsoft.Agents.AI;
 
 namespace InterviewAssistant.Api.Agents;
 
-public static class JsonAgentRunner
+public sealed class JsonAgentRunner : IAgentRunner
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -12,12 +12,12 @@ public static class JsonAgentRunner
         AllowTrailingCommas = true
     };
 
-    public static async Task<(T Value, string Raw)> RunJsonAsync<T>(
+    public async Task<(T Value, string Raw)> RunJsonAsync<T>(
         AIAgent agent,
         string prompt,
-        CancellationToken cancellationToken = default)
+        CancellationToken ct = default)
     {
-        var result = await agent.RunAsync(prompt, cancellationToken: cancellationToken);
+        var result = await agent.RunAsync(prompt, cancellationToken: ct);
         return ParseJson<T>(result.Text.Trim());
     }
 

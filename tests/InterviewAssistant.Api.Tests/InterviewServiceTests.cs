@@ -10,7 +10,7 @@ namespace InterviewAssistant.Api.Tests;
 public class InterviewServiceTests
 {
     private readonly Mock<IAgentRunner> _runner;
-    private readonly InterviewService _service;
+    private readonly IInterviewService _service;
 
     public InterviewServiceTests()
     {
