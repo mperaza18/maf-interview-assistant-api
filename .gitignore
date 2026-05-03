@@ -33,3 +33,6 @@ coverage/
 ## Logs
 logs/
 *.log
+
+## Claude Code — personal settings (never commit)
+.claude/settings.local.json

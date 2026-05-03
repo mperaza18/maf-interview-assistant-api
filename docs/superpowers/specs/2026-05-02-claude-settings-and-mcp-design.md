@@ -80,7 +80,7 @@ The Swagger UI URL in `CLAUDE.md` incorrectly states `http://localhost:5000`. Th
 ## Files Changed
 
 | File | Action |
-|---|---|
+| --- | --- |
 | `.claude/settings.json` | Create — versioned permissions + MCP server |
 | `.claude/settings.local.json` | Modify — remove hardcoded path, empty allow list |
 | `CLAUDE.md` | Modify — fix Swagger port 5000 → 5001 |
