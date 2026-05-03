@@ -13,7 +13,7 @@ ASP.NET Core Web API (.NET 9) wrapping the [Microsoft Agent Framework Interview 
 | `POST` | `/api/interview/plan/revise` | Plan + feedback → revised `InterviewPlan` |
 | `POST` | `/api/interview/evaluate` | Profile + plan + notes → `EvaluationResult` |
 
-Swagger UI is available at `http://localhost:5000` in Development mode.
+Swagger UI is available at `http://localhost:5001` in Development mode.
 
 ---
 
@@ -66,7 +66,7 @@ cd src/InterviewAssistant.Api
 dotnet run
 ```
 
-Then open `http://localhost:5000` for the Swagger UI.
+Then open `http://localhost:5001` for the Swagger UI.
 
 ---
 
@@ -74,24 +74,24 @@ Then open `http://localhost:5000` for the Swagger UI.
 
 ```bash
 # 1. Analyze resume
-curl -s -X POST http://localhost:5000/api/interview/analyze \
+curl -s -X POST http://localhost:5001/api/interview/analyze \
   -H "Content-Type: application/json" \
   -d '{"resumeText": "Jane Doe, 8 years ...", "role": "Software Engineer"}' \
   | tee analyze.json
 
 # 2. Generate plan (pass profile + seniority from step 1)
-curl -s -X POST http://localhost:5000/api/interview/plan \
+curl -s -X POST http://localhost:5001/api/interview/plan \
   -H "Content-Type: application/json" \
   -d "{\"profile\": $(jq .profile analyze.json), \"seniority\": $(jq .seniority analyze.json), \"role\": \"Software Engineer\"}" \
   | tee plan.json
 
 # 3. Optionally revise
-curl -s -X POST http://localhost:5000/api/interview/plan/revise \
+curl -s -X POST http://localhost:5001/api/interview/plan/revise \
   -H "Content-Type: application/json" \
   -d "{\"plan\": $(cat plan.json), \"feedback\": \"more system design, fewer trivia\"}"
 
 # 4. Evaluate
-curl -s -X POST http://localhost:5000/api/interview/evaluate \
+curl -s -X POST http://localhost:5001/api/interview/evaluate \
   -H "Content-Type: application/json" \
   -d "{\"profile\": $(jq .profile analyze.json), \"plan\": $(cat plan.json), \"notes\": \"Strong on distributed systems, struggled with SQL.\"}"
 ```
@@ -114,6 +114,32 @@ dotnet test tests/InterviewAssistant.Api.IntegrationTests/ \
   --filter "Category=Integration" \
   --logger "console;verbosity=normal"
 ```
+
+---
+
+## Claude Code Integration
+
+`.claude/settings.json` is committed to this repo and auto-configures Claude Code for all collaborators:
+
+- **Shared permissions** — `dotnet build/run/restore/test`, `git`, and `gh` commands run without prompts.
+- **MCP fetch server** — Claude can call the live API during development sessions.
+
+### Using the MCP fetch server
+
+The `fetch` MCP server (`@modelcontextprotocol/server-fetch`) lets Claude hit `http://localhost:5001` directly to test endpoints while you develop.
+
+**Prerequisites:** Node.js / npm (for `npx`). No global install needed.
+
+**Workflow:**
+
+1. Start the API:
+   ```bash
+   dotnet run --project src/InterviewAssistant.Api
+   ```
+2. In a Claude Code session, ask Claude to test an endpoint — for example:
+   > "Call POST /api/interview/analyze with this resume text and show me the raw JSON response."
+
+Claude will use the `fetch` tool (launched automatically via `npx -y @modelcontextprotocol/server-fetch`) to make the request and return the response.
 
 ---
 

@@ -134,10 +134,10 @@ Esta sección del video (`Shift+Tab`, `!`, `Esc`) corresponde a hábitos del usu
 | Configuración inicial y permisos | ⚠️ Parcial | Alta — permisos `dotnet` faltantes bloquean automatización |
 | Q&A sobre el código | ✅ Bien cubierto | Baja |
 | Tests y automatización | ✅ Implementado (PR #3) | — |
-| MCP servers | ❌ No configurado | Media |
+| MCP servers | ✅ Configurado (PR #4) | — |
 | Comandos slash personalizados | ❌ Ausente | Baja |
 | CLAUDE.md del proyecto | ✅ Completo | Baja — solo pequeños añadidos |
-| Jerarquía de configuración | ⚠️ Parcial | Media — falta `settings.json` versionado |
+| Jerarquía de configuración | ✅ Completo (PR #4) | — |
 | CLAUDE.md global | ⚠️ Ausente | Baja |
 
 ---
@@ -148,9 +148,9 @@ Esta sección del video (`Shift+Tab`, `!`, `Esc`) corresponde a hábitos del usu
 1. ~~**Agregar tests** — Crear `InterviewAssistant.Api.Tests` con al menos tests de integración para los 4 endpoints. Sin esto, el flujo agéntico de Claude no puede auto-verificar cambios.~~ ✅ **DONE** — PR #3: 12 unit tests + 5 integration tests, two-project architecture.
 
 ### 🟡 Media Prioridad
-2. **Crear `.claude/settings.json` versionado** — Mover permisos genéricos (`dotnet *`, `git *`) a un archivo compartible con el equipo.
-3. **Corregir el permiso hardcodeado** — Reemplazar `"Bash(git -C /Users/mikeperaza/... log --oneline -10)"` por `"Bash(git log*)"` en `settings.local.json`.
-4. **Configurar un MCP server de HTTP** — Permitir que Claude pruebe los endpoints en vivo durante el desarrollo.
+2. ~~**Crear `.claude/settings.json` versionado** — Mover permisos genéricos (`dotnet *`, `git *`) a un archivo compartible con el equipo.~~ ✅ **DONE** — PR #4: 14 permisos + mcpServers block en `.claude/settings.json` versionado.
+3. ~~**Corregir el permiso hardcodeado** — Reemplazar `"Bash(git -C /Users/mikeperaza/... log --oneline -10)"` por `"Bash(git log*)"` en `settings.local.json`.~~ ✅ **DONE** — PR #4: ruta hardcodeada eliminada, `settings.local.json` agregado al `.gitignore`.
+4. ~~**Configurar un MCP server de HTTP** — Permitir que Claude pruebe los endpoints en vivo durante el desarrollo.~~ ✅ **DONE** — PR #4: `@modelcontextprotocol/server-fetch` vía `npx` en `.claude/settings.json`.
 
 ### 🟢 Baja Prioridad
 5. **Agregar sección `## Working with Claude`** al `CLAUDE.md` con instrucciones de flujo de trabajo.
