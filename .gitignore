@@ -36,3 +36,6 @@ logs/
 
 ## Claude Code — personal settings (never commit)
 .claude/settings.local.json
+
+## Git worktrees
+.worktrees/
