@@ -78,3 +78,10 @@ HTTP POST → InterviewController → InterviewService → AgentFactory / JsonAg
 2. `plan` — profile + seniority + role → `InterviewPlan` (planner agent)
 3. `plan/revise` — plan + feedback string → revised `InterviewPlan` (planner agent)
 4. `evaluate` — profile + plan + notes → `EvaluationResult` (evaluator agent)
+
+## Working with Claude
+
+- Before significant changes, ask Claude to generate a plan first.
+- Always create a feature branch; never commit directly to `main`.
+- Run `dotnet build` to verify changes before committing.
+- Azure CLI must be installed and logged in if no `ApiKey` is set.
