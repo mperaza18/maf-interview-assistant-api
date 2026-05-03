@@ -98,6 +98,25 @@ curl -s -X POST http://localhost:5000/api/interview/evaluate \
 
 ---
 
+## Testing
+
+```bash
+# Unit tests — no Azure credentials needed, runs in CI
+dotnet test tests/InterviewAssistant.Api.Tests/
+
+# Unit tests with coverage report
+dotnet test tests/InterviewAssistant.Api.Tests/ \
+  --collect:"XPlat Code Coverage" \
+  --results-directory ./coverage
+
+# Integration tests — requires appsettings.Development.json with real Azure config
+dotnet test tests/InterviewAssistant.Api.IntegrationTests/ \
+  --filter "Category=Integration" \
+  --logger "console;verbosity=normal"
+```
+
+---
+
 ## Project structure
 
 ```
