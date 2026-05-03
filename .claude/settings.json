@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build*)",
+      "Bash(dotnet run*)",
+      "Bash(dotnet restore*)",
+      "Bash(dotnet test*)",
+      "Bash(dotnet new*)",
+      "Bash(dotnet sln*)",
+      "Bash(dotnet add*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git status*)",
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(gh repo*)",
+      "Bash(gh pr*)"
+    ]
+  },
+  "mcpServers": {
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    }
+  }
+}
