@@ -15,7 +15,7 @@ dotnet build
 dotnet restore
 ```
 
-Swagger UI is served at `http://localhost:5000` when running in Development mode (the default for `dotnet run`).
+Swagger UI is served at `http://localhost:5001` when running in Development mode (the default for `dotnet run`).
 
 ## Testing
 
