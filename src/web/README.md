@@ -6,29 +6,29 @@ A guided, AI-powered interview tool for interviewers. Walks through a 4-step wiz
 
 ## Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │                        Browser (React)                          │
 │                                                                 │
 │  ┌──────────────┐    ┌────────────────────────────────────────┐ │
 │  │  Home Screen │    │           Wizard (Steps 1–4)           │ │
 │  │              │    │                                        │ │
-│  │  • Sessions  │    │  ┌──────────┐  ┌──────────────────┐    │ │
-│  │    list      │───▶│  │ Step  1  │  │    Step  2       │    │ │
-│  │  • New /     │    │  │ Analyze  │─▶│  Interview Plan  │    │ │
-│  │    Resume    │    │  │ Resume   │  │  + Revision      │    │ │
-│  └──────────────┘    │  └──────────┘  └──────────────────┘    │ │
-│                      │  ┌──────────┐  ┌──────────────────┐    │ │
-│                      │  │ Step  3  │  │    Step  4       │    │ │
-│                      │  │  Live    │─▶│   Evaluation     │    │ │
-│                      │  │ Session  │  │   & Scoring      │    │ │
-│                      │  └──────────┘  └──────────────────┘    │ │
+│  │  • Sessions  │    │  ┌──────────┐  ┌──────────────────┐   │ │
+│  │    list      │───▶│  │ Step  1  │  │    Step  2       │   │ │
+│  │  • New /     │    │  │ Analyze  │─▶│  Interview Plan  │   │ │
+│  │    Resume    │    │  │ Resume   │  │  + Revision      │   │ │
+│  └──────────────┘    │  └──────────┘  └──────────────────┘   │ │
+│                      │  ┌──────────┐  ┌──────────────────┐   │ │
+│                      │  │ Step  3  │  │    Step  4       │   │ │
+│                      │  │  Live    │─▶│   Evaluation     │   │ │
+│                      │  │ Session  │  │   & Scoring      │   │ │
+│                      │  └──────────┘  └──────────────────┘   │ │
 │                      └────────────────────────────────────────┘ │
 │                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │                   SessionContext                        │    │
-│  │   useReducer ──▶ state   LocalStorageSessionRepository  │    │
-│  └─────────────────────────────────────────────────────────┘    │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                   SessionContext                        │   │
+│  │   useReducer ──▶ state   LocalStorageSessionRepository  │   │
+│  └─────────────────────────────────────────────────────────┘   │
 └──────────────────────────────┬──────────────────────────────────┘
                                │ fetch (JSON)
                                ▼
@@ -46,23 +46,23 @@ A guided, AI-powered interview tool for interviewers. Walks through a 4-step wiz
 
 ## Tech Stack
 
-| Concern        | Choice                          |
-|----------------|---------------------------------|
-| Bundler        | Vite 5                          |
-| Framework      | React 18                        |
-| Language       | TypeScript 5                    |
-| Styling        | Tailwind CSS v3                 |
-| Components     | shadcn/ui                       |
-| State          | React Context + `useReducer`    |
-| Persistence    | `localStorage` (repository abstraction) |
-| HTTP           | Native `fetch`                  |
-| Testing        | Vitest + happy-dom              |
+| Concern     | Choice                                    |
+|-------------|-------------------------------------------|
+| Bundler     | Vite 5                                    |
+| Framework   | React 18                                  |
+| Language    | TypeScript 5                              |
+| Styling     | Tailwind CSS v3                           |
+| Components  | shadcn/ui                                 |
+| State       | React Context + `useReducer`              |
+| Persistence | `localStorage` (repository abstraction)   |
+| HTTP        | Native `fetch`                            |
+| Testing     | Vitest + happy-dom                        |
 
 ---
 
 ## Project Structure
 
-```
+```text
 src/web/
 ├── src/
 │   ├── api/
@@ -82,12 +82,12 @@ src/web/
 │   │   ├── SessionRepository.ts     # Interface (swap-ready for backend)
 │   │   └── LocalStorageSessionRepository.ts
 │   ├── store/
-│   │   ├── SessionContext.tsx        # React context + useSession hook
-│   │   └── sessionReducer.ts        # Pure reducer + action types
+│   │   ├── SessionContext.tsx       # React context + useSession hook
+│   │   └── sessionReducer.ts       # Pure reducer + action types
 │   ├── types/
-│   │   └── index.ts                 # TypeScript types mirroring .NET models
-│   └── App.tsx                      # Root — context provider, view routing
-├── .env.example                     # Environment variable template
+│   │   └── index.ts                # TypeScript types mirroring .NET models
+│   └── App.tsx                     # Root — context provider, view routing
+├── .env.example                    # Environment variable template
 ├── vite.config.ts
 ├── tailwind.config.ts
 └── package.json
@@ -116,27 +116,29 @@ cp .env.example .env
 VITE_API_URL=http://localhost:5001
 ```
 
-| Variable        | Description                          | Default                    |
-|-----------------|--------------------------------------|----------------------------|
-| `VITE_API_URL`  | Base URL of the Interview Assistant API | `http://localhost:5001` |
+| Variable       | Description                             | Default                  |
+|----------------|-----------------------------------------|--------------------------|
+| `VITE_API_URL` | Base URL of the Interview Assistant API | `http://localhost:5001`  |
 
 ---
 
 ## Running Locally
 
-**1. Install dependencies**
+### 1. Install dependencies
 
 ```bash
 npm install
 ```
 
-**2. Start the API** (separate terminal, from repo root)
+### 2. Start the API
+
+In a separate terminal, from the repo root:
 
 ```bash
 dotnet run --project src/InterviewAssistant.Api
 ```
 
-**3. Start the dev server**
+### 3. Start the dev server
 
 ```bash
 npm run dev
@@ -148,12 +150,12 @@ Open [http://localhost:5173](http://localhost:5173).
 
 ## Available Scripts
 
-| Command            | Description                          |
-|--------------------|--------------------------------------|
-| `npm run dev`      | Start Vite dev server with HMR       |
-| `npm run build`    | Type-check and build for production  |
-| `npm test`         | Run unit tests (single pass)         |
-| `npm run test:watch` | Run tests in watch mode            |
+| Command              | Description                         |
+|----------------------|-------------------------------------|
+| `npm run dev`        | Start Vite dev server with HMR      |
+| `npm run build`      | Type-check and build for production |
+| `npm test`           | Run unit tests (single pass)        |
+| `npm run test:watch` | Run tests in watch mode             |
 
 ---
 
@@ -165,10 +167,10 @@ Unit tests cover the API client, session repository, and state reducer. No brows
 npm test
 ```
 
-```
-✓ src/store/sessionReducer.test.ts         (11 tests)
-✓ src/repositories/LocalStorageSessionRepository.test.ts  (6 tests)
-✓ src/api/interviewApi.test.ts             (6 tests)
+```text
+✓ src/store/sessionReducer.test.ts                        (11 tests)
+✓ src/repositories/LocalStorageSessionRepository.test.ts   (6 tests)
+✓ src/api/interviewApi.test.ts                             (6 tests)
 
 Tests  23 passed
 ```
@@ -185,7 +187,7 @@ Switching to a backend is a one-file change — implement `SessionRepository` an
 
 ## Interview Workflow
 
-```
+```text
 Step 1 — Analyze Resume
   └─ Paste plain-text resume + set target role
   └─ POST /api/interview/analyze → candidate profile + seniority level
