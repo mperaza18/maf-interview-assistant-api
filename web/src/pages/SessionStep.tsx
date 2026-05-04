@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useSession } from '@/store/SessionContext'
@@ -6,13 +5,6 @@ import { useSession } from '@/store/SessionContext'
 export function SessionStep() {
   const { state, dispatch } = useSession()
   const session = state.current
-
-  const handleNotesChange = useCallback(
-    (value: string) => {
-      dispatch({ type: 'SET_NOTES', notes: value })
-    },
-    [dispatch],
-  )
 
   if (!session) return null
 
@@ -62,7 +54,7 @@ export function SessionStep() {
           </h3>
           <Textarea
             value={session.notes}
-            onChange={(e) => handleNotesChange(e.target.value)}
+            onChange={(e) => dispatch({ type: 'SET_NOTES', notes: e.target.value })}
             placeholder="Type your observations and notes here as the interview progresses..."
             className="h-64 resize-none border-slate-700 bg-slate-800 text-slate-100 placeholder:text-slate-500"
           />
