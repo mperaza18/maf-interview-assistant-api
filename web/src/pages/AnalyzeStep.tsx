@@ -9,7 +9,8 @@ import { ErrorBanner } from '@/components/ErrorBanner'
 
 export function AnalyzeStep() {
   const { state, dispatch } = useSession()
-  const session = state.current!
+  if (!state.current) return null
+  const session = state.current
   const [resumeText, setResumeText] = useState(session.resumeText)
   const [role, setRole] = useState(session.role)
   const [loading, setLoading] = useState(false)
@@ -23,9 +24,17 @@ export function AnalyzeStep() {
     setError(null)
     try {
       const result = await analyzeResume(resumeText, role)
-      // Persist resumeText and role on the session before setting profile
-      dispatch({ type: 'LOAD_SESSION', session: { ...session, resumeText, role } })
-      dispatch({ type: 'SET_PROFILE', profile: result.profile, seniority: result.seniority })
+      dispatch({
+        type: 'LOAD_SESSION',
+        session: {
+          ...session,
+          resumeText,
+          role,
+          profile: result.profile,
+          seniority: result.seniority,
+          candidateName: result.profile.candidateName,
+        },
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Analysis failed. Please try again.')
     } finally {
