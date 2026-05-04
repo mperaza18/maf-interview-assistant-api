@@ -9,17 +9,18 @@ import { ErrorBanner } from '@/components/ErrorBanner'
 
 export function AnalyzeStep() {
   const { state, dispatch } = useSession()
-  if (!state.current) return null
   const session = state.current
-  const [resumeText, setResumeText] = useState(session.resumeText)
-  const [role, setRole] = useState(session.role)
+  const [resumeText, setResumeText] = useState(session?.resumeText ?? '')
+  const [role, setRole] = useState(session?.role ?? 'Software Engineer')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  if (!session) return null
 
   const hasResult = Boolean(session.profile && session.seniority)
 
   async function handleAnalyze() {
-    if (!resumeText.trim()) return
+    if (!resumeText.trim() || !session) return
     setLoading(true)
     setError(null)
     try {
