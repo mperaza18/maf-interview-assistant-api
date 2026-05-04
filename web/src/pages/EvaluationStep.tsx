@@ -7,8 +7,8 @@ import { ErrorBanner } from '@/components/ErrorBanner'
 
 function recommendationColor(rec: string): string {
   const lower = rec.toLowerCase()
-  if (lower.includes('strong hire') || lower.includes('hire')) return 'text-emerald-400'
   if (lower.includes('no hire') || lower.includes('reject')) return 'text-red-400'
+  if (lower.includes('strong hire') || lower.includes('hire')) return 'text-emerald-400'
   return 'text-amber-400'
 }
 
