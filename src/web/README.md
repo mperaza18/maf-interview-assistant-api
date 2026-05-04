@@ -13,27 +13,27 @@ A guided, AI-powered interview tool for interviewers. Walks through a 4-step wiz
 │  ┌──────────────┐    ┌────────────────────────────────────────┐ │
 │  │  Home Screen │    │           Wizard (Steps 1–4)           │ │
 │  │              │    │                                        │ │
-│  │  • Sessions  │    │  ┌──────────┐  ┌──────────────────┐   │ │
-│  │    list      │───▶│  │ Step  1  │  │    Step  2       │   │ │
-│  │  • New /     │    │  │ Analyze  │─▶│  Interview Plan  │   │ │
-│  │    Resume    │    │  │ Resume   │  │  + Revision      │   │ │
-│  └──────────────┘    │  └──────────┘  └──────────────────┘   │ │
-│                      │  ┌──────────┐  ┌──────────────────┐   │ │
-│                      │  │ Step  3  │  │    Step  4       │   │ │
-│                      │  │  Live    │─▶│   Evaluation     │   │ │
-│                      │  │ Session  │  │   & Scoring      │   │ │
-│                      │  └──────────┘  └──────────────────┘   │ │
+│  │  • Sessions  │    │  ┌──────────┐  ┌──────────────────┐    │ │
+│  │    list      │───▶│  │ Step  1  │  │    Step  2       │    │ │
+│  │  • New /     │    │  │ Analyze  │─▶│  Interview Plan  │    │ │
+│  │    Resume    │    │  │ Resume   │  │  + Revision      │    │ │
+│  └──────────────┘    │  └──────────┘  └──────────────────┘    │ │
+│                      │  ┌──────────┐  ┌──────────────────┐    │ │
+│                      │  │ Step  3  │  │    Step  4       │    │ │
+│                      │  │  Live    │─▶│   Evaluation     │    │ │
+│                      │  │ Session  │  │   & Scoring      │    │ │
+│                      │  └──────────┘  └──────────────────┘    │ │
 │                      └────────────────────────────────────────┘ │
 │                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                   SessionContext                        │   │
-│  │   useReducer ──▶ state   LocalStorageSessionRepository  │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                   SessionContext                        │    │
+│  │   useReducer ──▶ state   LocalStorageSessionRepository  │    │
+│  └─────────────────────────────────────────────────────────┘    │
 └──────────────────────────────┬──────────────────────────────────┘
                                │ fetch (JSON)
                                ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│               Interview Assistant API (.NET 8)                  │
+│               Interview Assistant API (.NET 9)                  │
 │                                                                 │
 │   POST /api/interview/analyze                                   │
 │   POST /api/interview/plan          Azure OpenAI                │
