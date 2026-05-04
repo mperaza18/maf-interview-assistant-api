@@ -41,8 +41,8 @@ logs/
 .worktrees/
 
 ## Frontend
-web/node_modules/
-web/dist/
+src/web/node_modules/
+src/web/dist/
 
 ## Brainstorming mockups
 .superpowers/
