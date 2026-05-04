@@ -79,6 +79,27 @@ HTTP POST → InterviewController → InterviewService → AgentFactory / JsonAg
 3. `plan/revise` — plan + feedback string → revised `InterviewPlan` (planner agent)
 4. `evaluate` — profile + plan + notes → `EvaluationResult` (evaluator agent)
 
+## Web UI Commands
+
+```bash
+# Run the React dev server (from repo root)
+cd web && npm run dev
+
+# Install web dependencies
+cd web && npm install
+
+# Run web unit tests
+cd web && npm test
+
+# Build for production
+cd web && npm run build
+```
+
+The React app runs at `http://localhost:5173` in dev mode.
+Both the API (`dotnet run`) and the web server (`npm run dev`) must be running for end-to-end testing.
+
+Copy `web/.env.example` to `web/.env` before running the dev server (already done if the file exists).
+
 ## Working with Claude
 
 - Before significant changes, ask Claude to generate a plan first.

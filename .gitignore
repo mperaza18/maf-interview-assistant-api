@@ -39,3 +39,10 @@ logs/
 
 ## Git worktrees
 .worktrees/
+
+## Frontend
+web/node_modules/
+web/dist/
+
+## Brainstorming mockups
+.superpowers/
