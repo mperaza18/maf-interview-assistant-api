@@ -33,6 +33,7 @@ export default function App() {
       currentStep: 1,
       resumeText: '',
       notes: '',
+      roundNotes: {},
     }
     dispatch({ type: 'CREATE_SESSION', session })
     setView('wizard')

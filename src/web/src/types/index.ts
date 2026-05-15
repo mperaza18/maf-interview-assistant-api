@@ -60,5 +60,6 @@ export interface Session {
   seniority?: SeniorityAssessment
   plan?: InterviewPlan
   notes: string
+  roundNotes?: Record<string, string>
   evaluation?: EvaluationResult
 }

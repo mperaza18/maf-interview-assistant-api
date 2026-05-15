@@ -6,6 +6,7 @@ export type SessionAction =
   | { type: 'SET_PROFILE'; profile: ResumeProfile; seniority: SeniorityAssessment }
   | { type: 'SET_PLAN'; plan: InterviewPlan }
   | { type: 'SET_NOTES'; notes: string }
+  | { type: 'SET_ROUND_NOTE'; roundName: string; note: string }
   | { type: 'SET_EVALUATION'; evaluation: EvaluationResult }
   | { type: 'SET_STEP'; step: 1 | 2 | 3 | 4 }
   | { type: 'CLEAR_SESSION' }
@@ -40,6 +41,15 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
     case 'SET_NOTES':
       if (!state.current) return state
       return { current: { ...state.current, notes: action.notes } }
+
+    case 'SET_ROUND_NOTE':
+      if (!state.current) return state
+      return {
+        current: {
+          ...state.current,
+          roundNotes: { ...state.current.roundNotes, [action.roundName]: action.note },
+        },
+      }
 
     case 'SET_EVALUATION':
       if (!state.current) return state

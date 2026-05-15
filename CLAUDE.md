@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+# AI Smart Fitter
+
+AI Smart Fitter -- AI-powered answers for Gate Keepers (GK) to help them when conducting tecnical fit interviews.
+The ideal is to evaluate the following seniorities: Trainee, Trainee advance, Junior, Junior Advance, Semi Senior, Semi Senior Adv, Senior, Software Designer, Architect.
+Based on the target seniority proposed the correct interview questions.
+
 ## Commands
 
 ```bash
@@ -18,6 +24,8 @@ dotnet restore
 Swagger UI is served at `http://localhost:5001` when running in Development mode (the default for `dotnet run`).
 
 ## Testing
+
+Backend tests use **xUnit**. Frontend tests use **Vitest** + happy-dom + Testing Library.
 
 ```bash
 # Run all unit tests (no Azure credentials needed)
@@ -51,6 +59,8 @@ Credentials live in `src/InterviewAssistant.Api/appsettings.Development.json` (g
 ```
 
 `AgentFactory.CreateAzureOpenAIAgent` throws `InvalidOperationException` at startup if `Endpoint` or `Deployment` are missing. `ApiKey` is optional — omitting it falls back to `AzureCliCredential`.
+
+**CORS** is configured as fully open (`AllowAnyOrigin/Method/Header`) in `Program.cs` — this is intentional for local development so the React dev server can reach the API without a proxy. Tighten it per-environment via `appsettings` before any real deployment.
 
 ## Architecture
 
@@ -88,8 +98,11 @@ cd src/web && npm run dev
 # Install web dependencies
 cd src/web && npm install
 
-# Run web unit tests
+# Run web unit tests (single run)
 cd src/web && npm test
+
+# Run web unit tests in watch mode
+cd src/web && npm run test:watch
 
 # Build for production
 cd src/web && npm run build
@@ -98,11 +111,35 @@ cd src/web && npm run build
 The React app runs at `http://localhost:5173` in dev mode.
 Both the API (`dotnet run`) and the web server (`npm run dev`) must be running for end-to-end testing.
 
-Copy `src/web/.env.example` to `src/web/.env` before running the dev server (already done if the file exists).
+Before running the dev server, copy `src/web/.env.example` to `src/web/.env`. The only variable is `VITE_API_URL` — it points the React app at the API (`http://localhost:5001` by default). Without it the app falls back to the same hardcoded default, but the file should still exist.
+
+## Frontend Architecture
+
+The React app is a 5-step wizard built with React 18 + Vite + TypeScript + Tailwind CSS. UI primitives come from shadcn/ui (`src/web/src/components/ui/`).
+
+### Page flow
+
+```
+HomeScreen → AnalyzeStep → PlanStep → SessionStep → EvaluationStep
+```
+
+Each step corresponds to one API call and advances the wizard on success.
+
+### State management
+
+Global session state lives in `SessionContext` (Context API) backed by a `sessionReducer`. The context exposes `{ state, dispatch, repository }`. Session data is persisted to `localStorage` via `LocalStorageSessionRepository` so a page refresh doesn't lose progress.
+
+### API client
+
+`src/web/src/api/interviewApi.ts` wraps all four endpoints. It throws `ApiError` (status + body) on non-2xx responses, which the step components catch and surface via `ErrorBanner`.
+
+### Shared types contract
+
+`src/web/src/types/index.ts` mirrors the backend C# models (`ResumeProfile`, `SeniorityAssessment`, `InterviewPlan`, `EvaluationResult`, etc.). **If a backend model changes, the frontend types must be updated to match.** There is no code-generation step — this is a manual contract.
 
 ## Working with Claude
 
 - Before significant changes, ask Claude to generate a plan first.
 - Always create a feature branch; never commit directly to `main`.
-- Run `dotnet build` to verify changes before committing.
+- Run `dotnet build` to verify API changes before committing.
 - Azure CLI must be installed and logged in if no `ApiKey` is set.
