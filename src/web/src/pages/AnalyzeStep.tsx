@@ -57,6 +57,7 @@ export function AnalyzeStep() {
   function handleRetry() {
     setUploadStatus('idle')
     setErrorMessage(null)
+    setFileName(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
