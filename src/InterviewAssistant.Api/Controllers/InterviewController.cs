@@ -2,6 +2,7 @@ using InterviewAssistant.Api.Models;
 using InterviewAssistant.Api.Requests;
 using InterviewAssistant.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using UglyToad.PdfPig;
 
 namespace InterviewAssistant.Api.Controllers;
 
@@ -12,11 +13,16 @@ public sealed class InterviewController : ControllerBase
 {
     private readonly IInterviewService _service;
     private readonly ILogger<InterviewController> _logger;
+    private readonly IConfiguration _configuration;
 
-    public InterviewController(IInterviewService service, ILogger<InterviewController> logger)
+    public InterviewController(
+        IInterviewService service,
+        ILogger<InterviewController> logger,
+        IConfiguration configuration)
     {
         _service = service;
         _logger = logger;
+        _configuration = configuration;
     }
 
     // ─── POST /api/interview/analyze ──────────────────────────────────────────
@@ -110,6 +116,71 @@ public sealed class InterviewController : ControllerBase
 
         var evaluation = await _service.EvaluateAsync(request.Profile, request.Plan, request.Notes, ct);
         return Ok(evaluation);
+    }
+
+    // ─── POST /api/interview/analyze-pdf ─────────────────────────────────────
+
+    /// <summary>
+    /// Accepts a PDF resume via multipart/form-data, saves it to disk,
+    /// extracts plain text with PdfPig, and runs the AI analysis pipeline.
+    /// Returns the same AnalyzeResumeResponse as POST /api/interview/analyze.
+    /// </summary>
+    [HttpPost("analyze-pdf")]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(typeof(AnalyzeResumeResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AnalyzePdf(
+        IFormFile? file,
+        [FromForm] string role = "Software Engineer",
+        CancellationToken ct = default)
+    {
+        if (file is null || file.ContentType != "application/pdf")
+            return BadRequest(ProblemDetailsFor("A PDF file is required."));
+
+        _logger.LogInformation("Processing PDF resume: {FileName}", file.FileName);
+
+        byte[] pdfBytes;
+        try
+        {
+            using var ms = new MemoryStream();
+            await file.CopyToAsync(ms, ct);
+            pdfBytes = ms.ToArray();
+        }
+        catch (IOException ex)
+        {
+            _logger.LogError(ex, "Failed to read uploaded PDF");
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                ProblemDetailsFor("Failed to save the resume file."));
+        }
+
+        try
+        {
+            var dir = _configuration["ResumeStorage:Path"] ?? @"C:\AI Smart Fitter\Resumes";
+            Directory.CreateDirectory(dir);
+            await System.IO.File.WriteAllBytesAsync(
+                Path.Combine(dir, Path.GetFileName(file.FileName)), pdfBytes, ct);
+        }
+        catch (IOException ex)
+        {
+            _logger.LogError(ex, "Failed to save PDF to disk");
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                ProblemDetailsFor("Failed to save the resume file."));
+        }
+
+        string extractedText;
+        using (var doc = PdfDocument.Open(pdfBytes))
+            extractedText = string.Join(" ", doc.GetPages()
+                .SelectMany(p => p.GetWords())
+                .Select(w => w.Text));
+
+        if (string.IsNullOrWhiteSpace(extractedText))
+            return UnprocessableEntity(ProblemDetailsFor(
+                "Could not extract text from the PDF. The file may be scanned or image-only."));
+
+        var (profile, seniority) = await _service.AnalyzeResumeAsync(extractedText, role, ct);
+        return Ok(new AnalyzeResumeResponse { Profile = profile, Seniority = seniority });
     }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────

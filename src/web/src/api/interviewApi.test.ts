@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { analyzeResume, generatePlan, revisePlan, evaluate, ApiError } from './interviewApi'
+import { analyzeResume, generatePlan, revisePlan, evaluate, analyzeResumePdf, ApiError } from './interviewApi'
 import type { ResumeProfile, SeniorityAssessment, InterviewPlan } from '../types'
 
 const mockProfile: ResumeProfile = {
@@ -78,5 +78,43 @@ describe('evaluate', () => {
     mockFetch(200, evaluation)
     const result = await evaluate(mockProfile, mockPlan, 'good answers')
     expect(result).toEqual(evaluation)
+  })
+})
+
+describe('analyzeResumePdf', () => {
+  it('POSTs to /api/interview/analyze-pdf using FormData', async () => {
+    const response = { profile: mockProfile, seniority: mockSeniority }
+    mockFetch(200, response)
+    const file = new File(['%PDF-1.4'], 'resume.pdf', { type: 'application/pdf' })
+    await analyzeResumePdf(file, 'Engineer')
+    const [url, init] = (fetch as ReturnType<typeof vi.fn>).mock.calls[0] as [string, RequestInit]
+    expect(url).toContain('/api/interview/analyze-pdf')
+    expect(init.method).toBe('POST')
+    expect(init.body).toBeInstanceOf(FormData)
+    expect((init as RequestInit & { headers?: unknown }).headers).toBeUndefined()
+  })
+
+  it('returns parsed AnalyzeResumeResponse on 200', async () => {
+    const response = { profile: mockProfile, seniority: mockSeniority }
+    mockFetch(200, response)
+    const file = new File(['%PDF-1.4'], 'resume.pdf', { type: 'application/pdf' })
+    const result = await analyzeResumePdf(file, 'Engineer')
+    expect(result).toEqual(response)
+  })
+
+  it('throws ApiError on non-2xx response', async () => {
+    mockFetch(422, { detail: 'no text' })
+    const file = new File(['%PDF-1.4'], 'resume.pdf', { type: 'application/pdf' })
+    await expect(analyzeResumePdf(file, 'Engineer')).rejects.toBeInstanceOf(ApiError)
+  })
+
+  it('ApiError carries the correct status code', async () => {
+    mockFetch(422, { detail: 'no text' })
+    const file = new File(['%PDF-1.4'], 'resume.pdf', { type: 'application/pdf' })
+    try {
+      await analyzeResumePdf(file, 'Engineer')
+    } catch (e) {
+      expect((e as ApiError).status).toBe(422)
+    }
   })
 })

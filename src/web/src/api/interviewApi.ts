@@ -23,6 +23,19 @@ async function post<T>(path: string, body: unknown): Promise<T> {
 export const analyzeResume = (resumeText: string, role: string): Promise<AnalyzeResumeResponse> =>
   post('analyze', { resumeText, role })
 
+export async function analyzeResumePdf(file: File, role: string): Promise<AnalyzeResumeResponse> {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('role', role)
+  const res = await fetch(`${baseUrl()}/api/interview/analyze-pdf`, {
+    method: 'POST',
+    body: formData,
+  })
+  const text = await res.text()
+  if (!res.ok) throw new ApiError(res.status, text)
+  return JSON.parse(text) as AnalyzeResumeResponse
+}
+
 export const generatePlan = (
   profile: ResumeProfile,
   seniority: SeniorityAssessment,
