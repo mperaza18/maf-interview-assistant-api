@@ -157,7 +157,8 @@ public sealed class InterviewController : ControllerBase
 
         try
         {
-            var dir = _configuration["ResumeStorage:Path"] ?? @"C:\AI Smart Fitter\Resumes";
+            var dir = _configuration["ResumeStorage:Path"]
+                ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AI Smart Fitter", "Resumes");
             Directory.CreateDirectory(dir);
             await System.IO.File.WriteAllBytesAsync(
                 Path.Combine(dir, Path.GetFileName(file.FileName)), pdfBytes, ct);
