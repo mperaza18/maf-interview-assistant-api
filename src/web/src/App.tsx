@@ -56,7 +56,7 @@ export default function App() {
   return (
     <SessionContext.Provider value={{ state, dispatch, repository }}>
       <div className="min-h-screen bg-slate-950 text-slate-100">
-        <div className="mx-auto max-w-4xl px-4 py-8">
+        <div className="mx-auto max-w-[760px] px-4 py-8">
           {view === 'home' ? (
             <HomeScreen onNew={handleNew} onLoad={handleLoad} />
           ) : (
