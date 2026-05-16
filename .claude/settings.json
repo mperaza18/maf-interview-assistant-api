@@ -11,7 +11,6 @@
       "Bash(git log*)",
       "Bash(git diff*)",
       "Bash(git status*)",
-      "Bash(git commit*)",
       "Bash(git push*)",
       "Bash(gh repo*)",
       "Bash(gh pr*)"

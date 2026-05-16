@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input'
 import { useSession } from '@/store/SessionContext'
 import { analyzeResumePdf, ApiError } from '@/api/interviewApi'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
+import { SeniorityBadge, ConfidenceBadge } from '@/components/ui/StatBadge'
 
 type UploadStatus = 'idle' | 'uploading' | 'success' | 'error'
 
@@ -135,6 +136,10 @@ export function AnalyzeStep() {
               <span className="text-slate-400">· {session.profile.yearsExperience} yrs exp</span>
             )}
           </div>
+          <div className="flex gap-3">
+            <SeniorityBadge level={session.seniority.level} />
+            <ConfidenceBadge confidence={session.seniority.confidence} />
+          </div>
           <div className="flex flex-wrap gap-2">
             {session.profile.coreSkills.map((skill) => (
               <span
@@ -144,15 +149,6 @@ export function AnalyzeStep() {
                 {skill}
               </span>
             ))}
-          </div>
-          <div className="text-sm text-slate-400">
-            Seniority:{' '}
-            <span className="font-semibold text-indigo-400">{session.seniority.level}</span>
-            {' · '}
-            Confidence:{' '}
-            <span className="text-slate-200">
-              {Math.round(session.seniority.confidence * 100)}%
-            </span>
           </div>
           {session.profile.redFlags.length > 0 && (
             <div className="text-sm text-amber-400">
