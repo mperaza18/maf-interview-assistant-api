@@ -60,59 +60,61 @@ export function AnalyzeStep() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="space-y-2 md:col-span-2">
-          <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-            Resume (PDF)
-          </label>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf"
-            onChange={handleFileChange}
-            className="hidden"
-            aria-label="Upload PDF resume"
-          />
-          <div className="flex items-center gap-3">
-            <Button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploadStatus === 'uploading'}
-              className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
-            >
-              {uploadStatus === 'uploading' ? 'Uploading...' : 'Upload PDF'}
-            </Button>
-            {uploadStatus === 'success' && (
-              <span className="flex items-center gap-1 text-sm text-emerald-400">
-                <span>📄</span>
-                <span>✓</span>
-              </span>
-            )}
-            {uploadStatus === 'error' && (
-              <span className="flex items-center gap-2 text-sm">
-                <span>📄</span>
-                <span className="text-red-400">✗</span>
-                <button
-                  onClick={handleRetry}
-                  className="text-indigo-400 underline hover:text-indigo-300"
-                >
-                  Try another file
-                </button>
-              </span>
+      <div className="rounded-lg border border-slate-700 bg-slate-800 p-4 space-y-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              Resume (PDF)
+            </label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              className="hidden"
+              aria-label="Upload PDF resume"
+            />
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadStatus === 'uploading'}
+                className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+              >
+                {uploadStatus === 'uploading' ? 'Uploading...' : 'Upload PDF'}
+              </Button>
+              {uploadStatus === 'success' && (
+                <span className="flex items-center gap-1 text-sm text-emerald-400">
+                  <span>📄</span>
+                  <span>✓</span>
+                </span>
+              )}
+              {uploadStatus === 'error' && (
+                <span className="flex items-center gap-2 text-sm">
+                  <span>📄</span>
+                  <span className="text-red-400">✗</span>
+                  <button
+                    onClick={handleRetry}
+                    className="text-indigo-400 underline hover:text-indigo-300"
+                  >
+                    Try another file
+                  </button>
+                </span>
+              )}
+            </div>
+            {uploadStatus === 'error' && errorMessage && (
+              <p className="text-sm text-red-400">{errorMessage}</p>
             )}
           </div>
-          {uploadStatus === 'error' && errorMessage && (
-            <p className="text-sm text-red-400">{errorMessage}</p>
-          )}
-        </div>
-        <div className="space-y-2">
-          <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-            Target Role
-          </label>
-          <Input
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="border-slate-700 bg-slate-800 text-slate-100"
-          />
+          <div className="space-y-2">
+            <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              Target Role
+            </label>
+            <Input
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="border-slate-700 bg-slate-800 text-slate-100"
+            />
+          </div>
         </div>
       </div>
 
