@@ -13,6 +13,7 @@ export function AnalyzeStep() {
   const [role, setRole] = useState(session?.role ?? 'Software Engineer')
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [fileName, setFileName] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   if (!session) return null
@@ -30,6 +31,7 @@ export function AnalyzeStep() {
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    setFileName(file.name)
     setUploadStatus('uploading')
     setErrorMessage(null)
     try {
@@ -82,10 +84,10 @@ export function AnalyzeStep() {
               >
                 {uploadStatus === 'uploading' ? 'Uploading...' : 'Upload PDF'}
               </Button>
-              {uploadStatus === 'success' && (
-                <span className="flex items-center gap-1 text-sm text-emerald-400">
-                  <span>📄</span>
-                  <span>✓</span>
+              {uploadStatus === 'success' && fileName && (
+                <span className="flex items-center gap-1.5 rounded-md border border-emerald-500/40 bg-slate-700 px-2.5 py-1 text-sm text-slate-200">
+                  <span className="max-w-[160px] truncate">{fileName}</span>
+                  <span className="text-emerald-400">✓</span>
                 </span>
               )}
               {uploadStatus === 'error' && (
