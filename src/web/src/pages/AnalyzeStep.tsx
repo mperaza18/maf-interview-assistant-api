@@ -13,6 +13,7 @@ export function AnalyzeStep() {
   const [role, setRole] = useState(session?.role ?? 'Software Engineer')
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [fileName, setFileName] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   if (!session) return null
@@ -30,6 +31,7 @@ export function AnalyzeStep() {
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    setFileName(file.name)
     setUploadStatus('uploading')
     setErrorMessage(null)
     try {
@@ -55,64 +57,67 @@ export function AnalyzeStep() {
   function handleRetry() {
     setUploadStatus('idle')
     setErrorMessage(null)
+    setFileName(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="space-y-2 md:col-span-2">
-          <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-            Resume (PDF)
-          </label>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf"
-            onChange={handleFileChange}
-            className="hidden"
-            aria-label="Upload PDF resume"
-          />
-          <div className="flex items-center gap-3">
-            <Button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploadStatus === 'uploading'}
-              className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
-            >
-              {uploadStatus === 'uploading' ? 'Uploading...' : 'Upload PDF'}
-            </Button>
-            {uploadStatus === 'success' && (
-              <span className="flex items-center gap-1 text-sm text-emerald-400">
-                <span>📄</span>
-                <span>✓</span>
-              </span>
-            )}
-            {uploadStatus === 'error' && (
-              <span className="flex items-center gap-2 text-sm">
-                <span>📄</span>
-                <span className="text-red-400">✗</span>
-                <button
-                  onClick={handleRetry}
-                  className="text-indigo-400 underline hover:text-indigo-300"
-                >
-                  Try another file
-                </button>
-              </span>
+      <div className="rounded-lg border border-slate-700 bg-slate-800 p-4 space-y-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              Resume (PDF)
+            </label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              className="hidden"
+              aria-label="Upload PDF resume"
+            />
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadStatus === 'uploading'}
+                className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+              >
+                {uploadStatus === 'uploading' ? 'Uploading...' : 'Upload PDF'}
+              </Button>
+              {uploadStatus === 'success' && fileName && (
+                <span className="flex items-center gap-1.5 rounded-md border border-emerald-500/40 bg-slate-700 px-2.5 py-1 text-sm text-slate-200">
+                  <span className="max-w-[160px] truncate">{fileName}</span>
+                  <span className="text-emerald-400">✓</span>
+                </span>
+              )}
+              {uploadStatus === 'error' && (
+                <span className="flex items-center gap-2 text-sm">
+                  <span>📄</span>
+                  <span className="text-red-400">✗</span>
+                  <button
+                    onClick={handleRetry}
+                    className="text-indigo-400 underline hover:text-indigo-300"
+                  >
+                    Try another file
+                  </button>
+                </span>
+              )}
+            </div>
+            {uploadStatus === 'error' && errorMessage && (
+              <p className="text-sm text-red-400">{errorMessage}</p>
             )}
           </div>
-          {uploadStatus === 'error' && errorMessage && (
-            <p className="text-sm text-red-400">{errorMessage}</p>
-          )}
-        </div>
-        <div className="space-y-2">
-          <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-            Target Role
-          </label>
-          <Input
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="border-slate-700 bg-slate-800 text-slate-100"
-          />
+          <div className="space-y-2">
+            <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              Target Role
+            </label>
+            <Input
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="border-slate-700 bg-slate-800 text-slate-100"
+            />
+          </div>
         </div>
       </div>
 
