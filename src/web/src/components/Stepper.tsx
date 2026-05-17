@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 
-const STEPS: [number, string][] = [
+const STEPS: [1 | 2 | 3 | 4, string][] = [
   [1, 'Resume Analysis'],
   [2, 'Interview Plan'],
   [3, 'Live Session'],
@@ -9,9 +9,12 @@ const STEPS: [number, string][] = [
 
 interface StepperProps {
   currentStep: 1 | 2 | 3 | 4
+  onStepClick?: (step: 1 | 2 | 3 | 4) => void
 }
 
-export function Stepper({ currentStep }: StepperProps) {
+export function Stepper({ currentStep, onStepClick }: StepperProps) {
+  const circleBase = 'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors'
+
   return (
     <div className="flex items-center">
       {STEPS.map(([step, label], i) => {
@@ -20,20 +23,38 @@ export function Stepper({ currentStep }: StepperProps) {
         return (
           <div key={step} className="flex items-center">
             <div className="flex flex-col items-center gap-1">
-              <div
-                className={cn(
-                  'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors',
-                  isCompleted && 'bg-indigo-500 text-white',
-                  isActive && 'bg-indigo-500 text-white ring-2 ring-indigo-400 ring-offset-2 ring-offset-slate-950',
-                  !isCompleted && !isActive && 'bg-slate-700 text-slate-400',
-                )}
-              >
-                {isCompleted ? '✓' : step}
-              </div>
+              {isCompleted && onStepClick ? (
+                <button
+                  aria-label={`Go to step ${step}`}
+                  onClick={() => onStepClick(step)}
+                  className={cn(
+                    circleBase,
+                    'bg-indigo-500 text-white',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',
+                  )}
+                >
+                  ✓
+                </button>
+              ) : (
+                <div
+                  className={cn(
+                    circleBase,
+                    isCompleted && 'bg-indigo-500 text-white',
+                    isActive && 'bg-indigo-500 text-white ring-2 ring-indigo-400 ring-offset-2 ring-offset-slate-950',
+                    !isCompleted && !isActive && 'bg-slate-700 text-slate-400',
+                  )}
+                >
+                  {isCompleted ? '✓' : step}
+                </div>
+              )}
               <span
                 className={cn(
                   'text-xs hidden sm:block whitespace-nowrap',
-                  isActive ? 'text-slate-100 font-medium' : 'text-slate-500',
+                  isActive
+                    ? 'text-slate-100 font-semibold'
+                    : isCompleted
+                      ? 'text-indigo-400 font-semibold'
+                      : 'text-slate-500',
                 )}
               >
                 {label}
