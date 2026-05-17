@@ -6,6 +6,8 @@ import { generatePlan, revisePlan } from '@/api/interviewApi'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { ErrorBanner } from '@/components/ErrorBanner'
 
+const ROUND_COLORS = ['#6c47ff', '#14abab', '#22c467', '#e9ad1c']
+
 export function PlanStep() {
   const { state, dispatch } = useSession()
   const session = state.current
@@ -14,6 +16,7 @@ export function PlanStep() {
   const [feedback, setFeedback] = useState('')
   const [revising, setRevising] = useState(false)
   const calledRef = useRef(false)
+  const roundsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (calledRef.current) return
@@ -37,12 +40,15 @@ export function PlanStep() {
       const revised = await revisePlan(session.plan, feedback)
       dispatch({ type: 'SET_PLAN', plan: revised })
       setFeedback('')
+      roundsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Revision failed. Please try again.')
     } finally {
       setRevising(false)
     }
   }
+
+  const totalQuestions = session.plan?.rounds.reduce((sum, r) => sum + r.questions.length, 0) ?? 0
 
   return (
     <div className="space-y-6">
@@ -68,44 +74,81 @@ export function PlanStep() {
 
       {session.plan && (
         <>
-          <div className="space-y-3">
-            {session.plan.rounds.map((round, i) => (
-              <div key={i} className="rounded-lg border border-slate-700 bg-slate-800 p-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium text-slate-100">{round.name}</span>
-                  <span className="text-xs text-slate-500">· {round.durationMinutes} min</span>
+          {/* Metadata card */}
+          <div className="rounded-xl border border-slate-700 bg-slate-800/80 px-6 py-4 flex items-center gap-0">
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Target Role</p>
+              <p className="text-[15px] font-semibold text-white mt-1 truncate">{session.role}</p>
+            </div>
+            <div className="w-px h-12 bg-slate-700 mx-6 shrink-0" />
+            <div className="shrink-0">
+              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Difficulty</p>
+              <span className="mt-1 inline-block bg-amber-900/50 text-amber-400 text-xs font-semibold px-3 py-1 rounded-md">
+                {session.plan.level}
+              </span>
+            </div>
+            <div className="w-px h-12 bg-slate-700 mx-6 shrink-0" />
+            <div className="shrink-0">
+              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Questions</p>
+              <p className="text-[15px] font-semibold text-white mt-1">{totalQuestions} questions</p>
+            </div>
+          </div>
+
+          {/* Interview Questions unified card */}
+          <div ref={roundsRef} className="rounded-xl border border-slate-700 bg-slate-800/80 p-6">
+            <h3 className="text-base font-semibold text-white mb-5">Interview Questions</h3>
+            {session.plan.rounds.map((round, i) => {
+              const color = ROUND_COLORS[i % ROUND_COLORS.length]
+              return (
+                <div key={i}>
+                  {i > 0 && <div className="border-t border-slate-700 my-4" />}
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: color }} />
+                    <span className="text-xs font-semibold" style={{ color }}>{round.name}</span>
+                  </div>
+                  <ol className="space-y-2">
+                    {round.questions.map((q, j) => (
+                      <li key={j} className="flex gap-3 text-sm">
+                        <span className="shrink-0 text-slate-600 w-4">{j + 1}.</span>
+                        <span className="text-slate-400">{q}</span>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
-                <ul className="space-y-1">
-                  {round.questions.map((q, j) => (
-                    <li key={j} className="text-sm text-slate-400 flex gap-2">
-                      <span className="shrink-0 text-slate-600">•</span>
-                      <span>{q}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
-          <div className="flex gap-2">
-            <Input
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder='Revise plan, e.g. "more system design questions"'
-              className="border-slate-700 bg-slate-800 text-slate-100 placeholder:text-slate-500"
-              onKeyDown={(e) => e.key === 'Enter' && handleRevise()}
-            />
+          {/* Revise bar */}
+          <div className="rounded-lg border border-indigo-500/40 bg-gradient-to-br from-indigo-950/60 to-slate-800/80 p-4 space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-indigo-400">✦ Revise Plan</p>
+            <div className="flex gap-2">
+              <Input
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                placeholder='Revise plan, e.g. "add more system design questions"'
+                className="border-slate-700 bg-slate-800 text-slate-100 placeholder:text-slate-500"
+                onKeyDown={(e) => e.key === 'Enter' && handleRevise()}
+              />
+              <Button
+                onClick={handleRevise}
+                disabled={!feedback.trim() || revising}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white shrink-0"
+              >
+                {revising ? 'Revising...' : 'Revise'}
+              </Button>
+            </div>
+          </div>
+
+          {/* Bottom CTAs */}
+          <div className="flex justify-end gap-3">
             <Button
-              onClick={handleRevise}
-              disabled={!feedback.trim() || revising}
               variant="outline"
-              className="border-slate-600 text-slate-300 hover:bg-slate-700 shrink-0"
+              className="border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+              disabled
             >
-              {revising ? 'Revising...' : 'Revise'}
+              Edit Questions
             </Button>
-          </div>
-
-          <div className="flex justify-end">
             <Button
               onClick={() => dispatch({ type: 'SET_STEP', step: 3 })}
               className="bg-indigo-600 hover:bg-indigo-700"
