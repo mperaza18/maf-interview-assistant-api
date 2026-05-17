@@ -3,6 +3,11 @@ name: Move Jira Ticket to Done
 on:
   pull_request:
     types: [closed]
+  workflow_dispatch:
+    inputs:
+      issue_key:
+        description: 'Jira issue key (e.g. KAN-10)'
+        required: true
 
 jobs:
   transition-jira:
@@ -12,9 +17,12 @@ jobs:
       - name: Extract Jira Issue Key
         id: extract
         run: |
-          # Looks for pattern like ABC-123 in PR title or branch name
-          ISSUE=$(echo "${{ github.event.pull_request.title }} ${{ github.head_ref }}" \
-            | grep -oP '[A-Z]+-[0-9]+' | head -1)
+          if [ -n "${{ inputs.issue_key }}" ]; then
+            ISSUE="${{ inputs.issue_key }}"
+          else
+            ISSUE=$(echo "${{ github.event.pull_request.title }} ${{ github.event.pull_request.head.ref }}" \
+              | grep -oP '[A-Z]+-[0-9]+' | head -1)
+          fi
           echo "issue=$ISSUE" >> $GITHUB_OUTPUT
 
       - name: Transition Jira Issue to Done
