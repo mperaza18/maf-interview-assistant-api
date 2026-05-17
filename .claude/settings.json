@@ -1,5 +1,8 @@
 {
   "permissions": {
+    "deny": [
+      "Bash(git commit*)"
+    ],
     "allow": [
       "Bash(dotnet build*)",
       "Bash(dotnet run*)",

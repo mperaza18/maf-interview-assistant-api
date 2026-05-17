@@ -71,7 +71,10 @@ export default function App() {
                 <h1 className="text-lg font-bold text-slate-100">Interview Assistant</h1>
                 <div className="w-24" />
               </div>
-              <Stepper currentStep={step} />
+              <Stepper
+                currentStep={step}
+                onStepClick={(s) => dispatch({ type: 'SET_STEP', step: s })}
+              />
               <div className="mt-8">
                 {step === 1 && <AnalyzeStep />}
                 {step === 2 && <PlanStep />}
