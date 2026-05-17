@@ -1,0 +1,27 @@
+name: Move Jira Ticket to Done
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  transition-jira:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract Jira Issue Key
+        id: extract
+        run: |
+          # Looks for pattern like ABC-123 in PR title or branch name
+          ISSUE=$(echo "${{ github.event.pull_request.title }} ${{ github.head_ref }}" \
+            | grep -oP '[A-Z]+-[0-9]+' | head -1)
+          echo "issue=$ISSUE" >> $GITHUB_OUTPUT
+
+      - name: Transition Jira Issue to Done
+        if: steps.extract.outputs.issue != ''
+        run: |
+          curl -X POST \
+            -H "Authorization: Basic ${{ secrets.JIRA_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"transition": {"id": "${{ secrets.JIRA_DONE_TRANSITION_ID }}"}}' \
+            "https://${{ secrets.JIRA_DOMAIN }}/rest/api/3/issue/${{ steps.extract.outputs.issue }}/transitions"
