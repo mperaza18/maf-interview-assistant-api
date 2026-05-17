@@ -1,0 +1,26 @@
+name: Move Jira Ticket to In Review
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+
+jobs:
+  transition-jira:
+    if: "!github.event.pull_request.draft"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract Jira Issue Key
+        id: extract
+        run: |
+          ISSUE=$(echo "${{ github.event.pull_request.title }} ${{ github.event.pull_request.head.ref }}" \
+            | grep -oP '[A-Z]+-[0-9]+' | head -1)
+          echo "issue=$ISSUE" >> $GITHUB_OUTPUT
+
+      - name: Transition Jira Issue to In Review
+        if: steps.extract.outputs.issue != ''
+        run: |
+          curl -X POST \
+            -H "Authorization: Basic ${{ secrets.JIRA_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"transition": {"id": "${{ secrets.JIRA_IN_REVIEW_TRANSITION_ID }}"}}' \
+            "https://${{ secrets.JIRA_DOMAIN }}/rest/api/3/issue/${{ steps.extract.outputs.issue }}/transitions"
