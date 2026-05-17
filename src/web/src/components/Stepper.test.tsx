@@ -37,10 +37,10 @@ describe('Stepper', () => {
     expect(screen.queryByRole('button', { name: 'Go to step 1' })).not.toBeInTheDocument()
   })
 
-  it('renders completed step labels with indigo color and semi-bold weight', () => {
+  it('renders completed step labels with green color and semi-bold weight', () => {
     render(<Stepper currentStep={3} />)
     const label = screen.getByText('Resume Analysis')
-    expect(label.className).toContain('text-indigo-400')
+    expect(label.className).toContain('text-green-400')
     expect(label.className).toContain('font-semibold')
   })
 

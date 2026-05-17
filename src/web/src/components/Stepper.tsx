@@ -29,8 +29,8 @@ export function Stepper({ currentStep, onStepClick }: StepperProps) {
                   onClick={() => onStepClick(step)}
                   className={cn(
                     circleBase,
-                    'bg-indigo-500 text-white',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',
+                    'bg-green-400 text-white',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',
                   )}
                 >
                   ✓
@@ -39,7 +39,7 @@ export function Stepper({ currentStep, onStepClick }: StepperProps) {
                 <div
                   className={cn(
                     circleBase,
-                    isCompleted && 'bg-indigo-500 text-white',
+                    isCompleted && 'bg-green-400 text-white',
                     isActive && 'bg-indigo-500 text-white ring-2 ring-indigo-400 ring-offset-2 ring-offset-slate-950',
                     !isCompleted && !isActive && 'bg-slate-700 text-slate-400',
                   )}
@@ -53,7 +53,7 @@ export function Stepper({ currentStep, onStepClick }: StepperProps) {
                   isActive
                     ? 'text-slate-100 font-semibold'
                     : isCompleted
-                      ? 'text-indigo-400 font-semibold'
+                      ? 'text-green-400 font-semibold'
                       : 'text-slate-500',
                 )}
               >
@@ -64,7 +64,7 @@ export function Stepper({ currentStep, onStepClick }: StepperProps) {
               <div
                 className={cn(
                   'h-0.5 w-12 md:w-20 mx-2 mb-4 transition-colors',
-                  step < currentStep ? 'bg-indigo-500' : 'bg-slate-700',
+                  step < currentStep ? 'bg-green-400' : 'bg-slate-700',
                 )}
               />
             )}
