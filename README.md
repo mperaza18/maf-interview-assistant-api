@@ -56,10 +56,22 @@ setx AzureOpenAI__Deployment="<deployment-name>"
 setx AzureOpenAI__ApiKey="<your-key>"
 ```
 
+List all env variables
+
+```bash
+# Command Prompt
+set
+
+# PowerShell
+Get-ChildItem Env:
+```
+
 
 ---
 
 ## Run locally
+
+### API
 
 ```bash
 cd src/InterviewAssistant.Api
@@ -67,6 +79,22 @@ dotnet run
 ```
 
 Then open `http://localhost:5001` for the Swagger UI.
+
+### Web UI
+
+```bash
+# First-time setup
+cd src/web
+cp .env.example .env   # set VITE_API_URL=http://localhost:5001
+npm install
+
+# Start dev server
+npm run dev
+```
+
+Open `http://localhost:5173`. Both the API and the dev server must be running for end-to-end use.
+
+See [src/web/README.md](src/web/README.md) for the full frontend reference (architecture, testing, available scripts).
 
 ---
 
@@ -146,13 +174,23 @@ Claude will use the `fetch` tool (launched automatically via `npx -y @modelconte
 ## Project structure
 
 ```
-src/InterviewAssistant.Api/
-├── Agents/                  ← AgentFactory, AgentPrompts, JsonAgentRunner
-├── Controllers/             ← InterviewController (4 endpoints)
-├── Models/                  ← ResumeProfile, SeniorityAssessment, InterviewPlan, EvaluationResult
-├── Requests/                ← Request DTOs
-├── Services/                ← InterviewService (business logic)
-├── Workflows/               ← InterviewWorkflowRunner
-├── Program.cs               ← App startup, DI, Swagger
-└── appsettings.json
+src/
+├── InterviewAssistant.Api/
+│   ├── Agents/              ← AgentFactory, AgentPrompts, JsonAgentRunner
+│   ├── Controllers/         ← InterviewController (4 endpoints)
+│   ├── Models/              ← ResumeProfile, SeniorityAssessment, InterviewPlan, EvaluationResult
+│   ├── Requests/            ← Request DTOs
+│   ├── Services/            ← InterviewService (business logic)
+│   ├── Workflows/           ← InterviewWorkflowRunner
+│   ├── Program.cs           ← App startup, DI, Swagger
+│   └── appsettings.json
+└── web/                     ← React 18 + Vite + TypeScript + Tailwind CSS
+    ├── src/
+    │   ├── api/             ← interviewApi.ts (typed fetch wrappers)
+    │   ├── components/      ← Shared UI components (shadcn/ui primitives)
+    │   ├── pages/           ← HomeScreen, AnalyzeStep, PlanStep, SessionStep, EvaluationStep
+    │   ├── repositories/    ← LocalStorageSessionRepository
+    │   ├── store/           ← SessionContext, sessionReducer
+    │   └── types/           ← TypeScript types mirroring backend models
+    └── README.md            ← Full frontend reference
 ```
