@@ -132,3 +132,51 @@ describe('PlanStep revise bar', () => {
     )
   })
 })
+
+describe('PlanStep header — duration badge', () => {
+  it('renders total duration by summing all round durationMinutes', () => {
+    renderPlanStep()
+    expect(screen.getByText('50 min total')).toBeInTheDocument()
+  })
+})
+
+describe('PlanStep header — candidate chips', () => {
+  it('renders the role chip below the heading', () => {
+    renderPlanStep()
+    expect(screen.getAllByText('Senior React Developer').length).toBeGreaterThan(0)
+  })
+
+  it('does not render the plan summary paragraph', () => {
+    renderPlanStep()
+    expect(screen.queryByText('Focus on system design and coding.')).not.toBeInTheDocument()
+  })
+
+  it('renders the top skills chip with coreSkills from profile', () => {
+    renderPlanStep()
+    expect(screen.getByText('React')).toBeInTheDocument()
+  })
+})
+
+describe('PlanStep section cards', () => {
+  it('renders category icon ⬡ for System Design round', () => {
+    renderPlanStep()
+    expect(screen.getByText('⬡')).toBeInTheDocument()
+  })
+
+  it('renders fallback icon ● for rounds with no matching category', () => {
+    renderPlanStep()
+    expect(screen.getByText('●')).toBeInTheDocument()
+  })
+
+  it('renders per-round duration in each section card header', () => {
+    renderPlanStep()
+    expect(screen.getByText('(20 min)')).toBeInTheDocument()
+    expect(screen.getByText('(30 min)')).toBeInTheDocument()
+  })
+
+  it('renders all question text inside section cards', () => {
+    renderPlanStep()
+    expect(screen.getByText('Design a caching layer')).toBeInTheDocument()
+    expect(screen.getByText('Implement a debounce utility')).toBeInTheDocument()
+  })
+})

@@ -2,13 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-# AI Smart Fitter
+## AI Smart Fitter
 
-AI Smart Fitter -- AI-powered answers for Gate Keepers (GK) to help them when conducting tecnical fit interviews.
+AI Smart Fitter -- AI-powered answers for Gate Keepers (GK) to help them when conducting technical fit interviews.
 The ideal is to evaluate the following seniorities: Trainee, Trainee advance, Junior, Junior Advance, Semi Senior, Semi Senior Adv, Senior, Software Designer, Architect.
 Based on the target seniority proposed the correct interview questions.
 
-## Commands
+## API Commands
 
 ```bash
 # Run the API (from repo root or the project dir)
@@ -68,7 +68,7 @@ The API wraps the [Microsoft Agent Framework](https://github.com/microsoft/agent
 
 ### Request flow
 
-```
+```text
 HTTP POST → InterviewController → InterviewService → AgentFactory / JsonAgentRunner / InterviewWorkflowRunner → Azure OpenAI
 ```
 
@@ -115,11 +115,11 @@ Before running the dev server, copy `src/web/.env.example` to `src/web/.env`. Th
 
 ## Frontend Architecture
 
-The React app is a 5-step wizard built with React 18 + Vite + TypeScript + Tailwind CSS. UI primitives come from shadcn/ui (`src/web/src/components/ui/`).
+The React app is a 4-step wizard (plus a home screen) built with React 18 + Vite + TypeScript + Tailwind CSS. UI primitives come from shadcn/ui (`src/web/src/components/ui/`).
 
 ### Page flow
 
-```
+```text
 HomeScreen → AnalyzeStep → PlanStep → SessionStep → EvaluationStep
 ```
 
