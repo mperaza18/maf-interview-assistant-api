@@ -5,8 +5,15 @@ import { useSession } from '@/store/SessionContext'
 import { generatePlan, revisePlan } from '@/api/interviewApi'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { ErrorBanner } from '@/components/ErrorBanner'
+import { CandidateChips } from '@/components/ui/CandidateChips'
 
-const ROUND_COLORS = ['#6c47ff', '#14abab', '#22c467', '#e9ad1c']
+function resolveCategory(name: string): { color: string; icon: string } {
+  const n = name.toLowerCase()
+  if (/experience|background|behavioral/.test(n)) return { color: '#6c47ff', icon: '◎' }
+  if (/system|design|architecture/.test(n)) return { color: '#14abab', icon: '⬡' }
+  if (/values|culture|fit/.test(n)) return { color: '#e9ad1c', icon: '◇' }
+  return { color: '#22c467', icon: '●' }
+}
 
 export function PlanStep() {
   const { state, dispatch } = useSession()
@@ -48,15 +55,27 @@ export function PlanStep() {
     }
   }
 
+  const totalMinutes = session.plan?.rounds.reduce((sum, r) => sum + r.durationMinutes, 0) ?? 0
   const totalQuestions = session.plan?.rounds.reduce((sum, r) => sum + r.questions.length, 0) ?? 0
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-slate-100">Interview Plan</h2>
-          {session.plan && (
-            <p className="text-sm text-slate-400 mt-0.5">{session.plan.summary}</p>
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-semibold text-slate-100">Interview Plan</h2>
+            {session.plan && (
+              <span className="rounded-full bg-slate-700 px-2.5 py-0.5 text-xs font-medium text-slate-300">
+                {totalMinutes} min total
+              </span>
+            )}
+          </div>
+          {session.plan && session.profile && (
+            <CandidateChips
+              role={session.role}
+              yearsExperience={session.profile.yearsExperience}
+              topSkills={session.profile.coreSkills}
+            />
           )}
         </div>
         <Button
@@ -94,17 +113,20 @@ export function PlanStep() {
             </div>
           </div>
 
-          {/* Interview Questions unified card */}
-          <div ref={roundsRef} className="rounded-xl border border-slate-700 bg-slate-800/80 p-6">
-            <h3 className="text-base font-semibold text-white mb-5">Interview Questions</h3>
+          {/* Section cards — one per round with left-border accent */}
+          <div ref={roundsRef} className="space-y-3">
             {session.plan.rounds.map((round, i) => {
-              const color = ROUND_COLORS[i % ROUND_COLORS.length]
+              const { color, icon } = resolveCategory(round.name)
               return (
-                <div key={i}>
-                  {i > 0 && <div className="border-t border-slate-700 my-4" />}
+                <div
+                  key={i}
+                  className="rounded-xl border border-slate-700 bg-slate-800/80 p-5 border-l-[3px]"
+                  style={{ borderLeftColor: color }}
+                >
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: color }} />
-                    <span className="text-xs font-semibold" style={{ color }}>{round.name}</span>
+                    <span className="text-sm" style={{ color }}>{icon}</span>
+                    <span className="text-sm font-semibold" style={{ color }}>{round.name}</span>
+                    <span className="text-xs text-slate-500">({round.durationMinutes} min)</span>
                   </div>
                   <ol className="space-y-2">
                     {round.questions.map((q, j) => (
