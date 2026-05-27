@@ -1,4 +1,5 @@
 import { useReducer, useState, useEffect, useMemo } from 'react'
+import { ThemeProvider } from '@/context/ThemeContext'
 import { SessionContext } from '@/store/SessionContext'
 import { sessionReducer, initialState } from '@/store/sessionReducer'
 import { LocalStorageSessionRepository } from '@/repositories/LocalStorageSessionRepository'
@@ -8,6 +9,7 @@ import { PlanStep } from '@/pages/PlanStep'
 import { SessionStep } from '@/pages/SessionStep'
 import { EvaluationStep } from '@/pages/EvaluationStep'
 import { Stepper } from '@/components/Stepper'
+import { Navbar } from '@/components/Navbar'
 import type { Session } from '@/types'
 
 type View = 'home' | 'wizard'
@@ -54,37 +56,30 @@ export default function App() {
   const step = state.current?.currentStep ?? 1
 
   return (
-    <SessionContext.Provider value={{ state, dispatch, repository }}>
-      <div className="min-h-screen bg-slate-950 text-slate-100">
-        <div className="mx-auto max-w-[760px] px-4 py-8">
-          {view === 'home' ? (
-            <HomeScreen onNew={handleNew} onLoad={handleLoad} />
-          ) : (
-            <>
-              <div className="mb-6 flex items-center justify-between">
-                <button
-                  onClick={handleBackToHome}
-                  className="text-sm text-slate-400 hover:text-slate-200 transition-colors"
-                >
-                  ← Sessions
-                </button>
-                <h1 className="text-lg font-bold text-slate-100">Interview Assistant</h1>
-                <div className="w-24" />
-              </div>
-              <Stepper
-                currentStep={step}
-                onStepClick={(s) => dispatch({ type: 'SET_STEP', step: s })}
-              />
-              <div className="mt-8">
-                {step === 1 && <AnalyzeStep />}
-                {step === 2 && <PlanStep />}
-                {step === 3 && <SessionStep />}
-                {step === 4 && <EvaluationStep onBackToHome={handleBackToHome} />}
-              </div>
-            </>
-          )}
+    <ThemeProvider>
+      <SessionContext.Provider value={{ state, dispatch, repository }}>
+        <div className="min-h-screen bg-background text-foreground">
+          <div className="mx-auto max-w-[760px] px-4 py-8">
+            <Navbar onBack={view === 'wizard' ? handleBackToHome : undefined} />
+            {view === 'home' ? (
+              <HomeScreen onNew={handleNew} onLoad={handleLoad} />
+            ) : (
+              <>
+                <Stepper
+                  currentStep={step}
+                  onStepClick={(s) => dispatch({ type: 'SET_STEP', step: s })}
+                />
+                <div className="mt-8">
+                  {step === 1 && <AnalyzeStep />}
+                  {step === 2 && <PlanStep />}
+                  {step === 3 && <SessionStep />}
+                  {step === 4 && <EvaluationStep onBackToHome={handleBackToHome} />}
+                </div>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    </SessionContext.Provider>
+      </SessionContext.Provider>
+    </ThemeProvider>
   )
 }

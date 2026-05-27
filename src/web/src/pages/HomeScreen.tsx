@@ -21,8 +21,8 @@ export function HomeScreen({ onNew, onLoad }: HomeScreenProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100">Interview Sessions</h1>
-          <p className="text-sm text-slate-400 mt-1">Resume a past session or start a new one</p>
+          <h1 className="text-2xl font-bold text-foreground">Interview Sessions</h1>
+          <p className="text-sm text-muted-foreground mt-1">Resume a past session or start a new one</p>
         </div>
         <Button onClick={onNew} className="bg-indigo-600 hover:bg-indigo-700">
           + New Interview
@@ -30,26 +30,26 @@ export function HomeScreen({ onNew, onLoad }: HomeScreenProps) {
       </div>
 
       {sessions.length === 0 ? (
-        <div className="rounded-lg border border-slate-700 bg-slate-800/50 py-16 text-center">
-          <p className="text-slate-400">No sessions yet.</p>
-          <p className="text-sm text-slate-500 mt-1">Click "New Interview" to get started.</p>
+        <div className="rounded-lg border border-border bg-card/50 py-16 text-center">
+          <p className="text-muted-foreground">No sessions yet.</p>
+          <p className="text-sm text-muted-foreground mt-1">Click "New Interview" to get started.</p>
         </div>
       ) : (
         <div className="space-y-3">
           {sessions.map((session) => (
             <div
               key={session.id}
-              className="flex items-center justify-between rounded-lg border border-slate-700 bg-slate-800 px-4 py-3"
+              className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3"
             >
               <div className="space-y-0.5">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-slate-100">
+                  <span className="font-medium text-foreground">
                     {session.candidateName || 'Unnamed Candidate'}
                   </span>
-                  <span className="text-slate-500">·</span>
-                  <span className="text-sm text-slate-400">{session.role}</span>
+                  <span className="text-muted-foreground">·</span>
+                  <span className="text-sm text-muted-foreground">{session.role}</span>
                 </div>
-                <div className="text-xs text-slate-500">
+                <div className="text-xs text-muted-foreground">
                   Last updated: {new Date(session.updatedAt).toLocaleDateString()} · Step{' '}
                   {session.currentStep} of 4
                 </div>

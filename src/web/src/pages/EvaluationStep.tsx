@@ -40,12 +40,12 @@ export function EvaluationStep({ onBackToHome }: EvaluationStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-slate-100">Evaluation Results</h2>
+        <h2 className="text-lg font-semibold text-foreground">Evaluation Results</h2>
         <Button
           variant="ghost"
           size="sm"
           onClick={() => dispatch({ type: 'SET_STEP', step: 3 })}
-          className="text-slate-400 hover:text-slate-200"
+          className="text-muted-foreground hover:text-foreground"
         >
           ← Back
         </Button>
@@ -57,44 +57,44 @@ export function EvaluationStep({ onBackToHome }: EvaluationStepProps) {
       {session.evaluation && (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="rounded-lg border border-slate-700 bg-slate-800 p-4 text-center">
+            <div className="rounded-lg border border-border bg-card p-4 text-center">
               <div className="text-4xl font-extrabold text-indigo-400">
                 {session.evaluation.overallScore}
               </div>
-              <div className="text-xs text-slate-400 mt-1">Overall Score</div>
+              <div className="text-xs text-muted-foreground mt-1">Overall Score</div>
             </div>
-            <div className="sm:col-span-2 rounded-lg border border-slate-700 bg-slate-800 p-4 space-y-1">
-              <div className="text-xs font-medium uppercase tracking-wide text-slate-400">
+            <div className="sm:col-span-2 rounded-lg border border-border bg-card p-4 space-y-1">
+              <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Recommendation
               </div>
               <div className={`text-xl font-bold ${recommendationColor(session.evaluation.recommendation)}`}>
                 {session.evaluation.recommendation}
               </div>
-              <p className="text-sm text-slate-400">{session.evaluation.summary}</p>
+              <p className="text-sm text-muted-foreground">{session.evaluation.summary}</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="rounded-lg border border-slate-700 bg-slate-800 p-4 space-y-2">
+            <div className="rounded-lg border border-border bg-card p-4 space-y-2">
               <div className="text-xs font-medium uppercase tracking-wide text-emerald-400">
                 ✓ Strengths
               </div>
               <ul className="space-y-1">
                 {session.evaluation.strengths.map((s, i) => (
-                  <li key={i} className="flex gap-2 text-sm text-slate-300">
+                  <li key={i} className="flex gap-2 text-sm text-foreground/80">
                     <span className="shrink-0 text-emerald-600">•</span>
                     <span>{s}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="rounded-lg border border-slate-700 bg-slate-800 p-4 space-y-2">
+            <div className="rounded-lg border border-border bg-card p-4 space-y-2">
               <div className="text-xs font-medium uppercase tracking-wide text-amber-400">
                 ⚠ Risks
               </div>
               <ul className="space-y-1">
                 {session.evaluation.risks.map((r, i) => (
-                  <li key={i} className="flex gap-2 text-sm text-slate-300">
+                  <li key={i} className="flex gap-2 text-sm text-foreground/80">
                     <span className="shrink-0 text-amber-600">•</span>
                     <span>{r}</span>
                   </li>
@@ -104,14 +104,14 @@ export function EvaluationStep({ onBackToHome }: EvaluationStepProps) {
           </div>
 
           {session.evaluation.followUps.length > 0 && (
-            <div className="rounded-lg border border-slate-700 bg-slate-800 p-4 space-y-2">
-              <div className="text-xs font-medium uppercase tracking-wide text-slate-400">
+            <div className="rounded-lg border border-border bg-card p-4 space-y-2">
+              <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Follow-up Questions
               </div>
               <ul className="space-y-1">
                 {session.evaluation.followUps.map((f, i) => (
-                  <li key={i} className="flex gap-2 text-sm text-slate-300">
-                    <span className="shrink-0 text-slate-600">•</span>
+                  <li key={i} className="flex gap-2 text-sm text-foreground/80">
+                    <span className="shrink-0 text-muted-foreground/60">•</span>
                     <span>{f}</span>
                   </li>
                 ))}
@@ -123,7 +123,7 @@ export function EvaluationStep({ onBackToHome }: EvaluationStepProps) {
             <Button
               variant="outline"
               onClick={onBackToHome}
-              className="border-slate-600 text-slate-300 hover:bg-slate-700"
+              className="border-border text-foreground/80 hover:bg-muted"
             >
               ← Back to Sessions
             </Button>
