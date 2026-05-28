@@ -29,8 +29,8 @@ export function SessionStep() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-slate-100">Live Interview Session</h2>
-          <p className="text-sm text-slate-400 mt-0.5">
+          <h2 className="text-lg font-semibold text-foreground">Live Interview Session</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">
             Use the questions below as a guide. Capture your notes as the interview progresses.
           </p>
         </div>
@@ -38,13 +38,13 @@ export function SessionStep() {
           variant="ghost"
           size="sm"
           onClick={() => dispatch({ type: 'SET_STEP', step: 2 })}
-          className="text-slate-400 hover:text-slate-200"
+          className="text-muted-foreground hover:text-foreground"
         >
           ← Back
         </Button>
       </div>
 
-      <div className="flex border-b border-slate-700" role="tablist">
+      <div className="flex border-b border-border" role="tablist">
         {rounds.map((r, i) => (
           <button
             key={r.name}
@@ -55,7 +55,7 @@ export function SessionStep() {
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               i === activeTab
                 ? 'text-indigo-400 border-b-2 border-indigo-400'
-                : 'text-slate-500 hover:text-slate-300'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             {r.name}
@@ -63,32 +63,32 @@ export function SessionStep() {
         ))}
       </div>
 
-      <div className="rounded-lg border border-slate-700 bg-slate-800 p-4 space-y-4">
+      <div className="rounded-lg border border-border bg-card p-4 space-y-4">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-indigo-400">{round.name}</span>
-          <span className="text-xs text-slate-500">· {round.durationMinutes} min</span>
+          <span className="text-xs text-muted-foreground">· {round.durationMinutes} min</span>
         </div>
 
         <div className="space-y-1">
           {round.questions.map((q, j) => (
-            <div key={j} className="flex gap-2 text-sm text-slate-400">
-              <span className="shrink-0 text-slate-600">•</span>
+            <div key={j} className="flex gap-2 text-sm text-muted-foreground">
+              <span className="shrink-0 text-muted-foreground/60">•</span>
               <span>{q}</span>
             </div>
           ))}
         </div>
 
         <div className="space-y-1.5">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Notes</p>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Notes</p>
           <Textarea
             value={roundNotes[round.name] ?? ''}
             onChange={(e) =>
               dispatch({ type: 'SET_ROUND_NOTE', roundName: round.name, note: e.target.value })
             }
             placeholder={`Capture your observations for ${round.name}...`}
-            className="h-40 resize-none border-slate-700 bg-slate-900 text-slate-100 placeholder:text-slate-600"
+            className="h-40 resize-none border-border bg-background text-foreground placeholder:text-muted-foreground"
           />
-          <p className="text-xs text-slate-500">Notes are saved automatically.</p>
+          <p className="text-xs text-muted-foreground">Notes are saved automatically.</p>
         </div>
       </div>
 

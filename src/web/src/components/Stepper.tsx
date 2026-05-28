@@ -30,7 +30,7 @@ export function Stepper({ currentStep, onStepClick }: StepperProps) {
                   className={cn(
                     circleBase,
                     'bg-green-400 text-white',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                   )}
                 >
                   ✓
@@ -40,8 +40,8 @@ export function Stepper({ currentStep, onStepClick }: StepperProps) {
                   className={cn(
                     circleBase,
                     isCompleted && 'bg-green-400 text-white',
-                    isActive && 'bg-indigo-500 text-white ring-2 ring-indigo-400 ring-offset-2 ring-offset-slate-950',
-                    !isCompleted && !isActive && 'bg-slate-700 text-slate-400',
+                    isActive && 'bg-indigo-500 text-white ring-2 ring-indigo-400 ring-offset-2 ring-offset-background',
+                    !isCompleted && !isActive && 'bg-muted text-muted-foreground',
                   )}
                 >
                   {isCompleted ? '✓' : step}
@@ -51,10 +51,10 @@ export function Stepper({ currentStep, onStepClick }: StepperProps) {
                 className={cn(
                   'text-xs hidden sm:block whitespace-nowrap',
                   isActive
-                    ? 'text-slate-100 font-semibold'
+                    ? 'text-foreground font-semibold'
                     : isCompleted
                       ? 'text-green-400 font-semibold'
-                      : 'text-slate-500',
+                      : 'text-muted-foreground',
                 )}
               >
                 {label}
@@ -64,7 +64,7 @@ export function Stepper({ currentStep, onStepClick }: StepperProps) {
               <div
                 className={cn(
                   'h-0.5 w-12 md:w-20 mx-2 mb-4 transition-colors',
-                  step < currentStep ? 'bg-green-400' : 'bg-slate-700',
+                  step < currentStep ? 'bg-green-400' : 'bg-border',
                 )}
               />
             )}

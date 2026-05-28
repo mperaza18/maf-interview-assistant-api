@@ -64,10 +64,10 @@ export function AnalyzeStep() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-slate-700 bg-slate-800 p-4 space-y-4">
+      <div className="rounded-lg border border-border bg-card p-4 space-y-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="space-y-2 md:col-span-2">
-            <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
+            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Resume (PDF)
             </label>
             <input
@@ -87,7 +87,7 @@ export function AnalyzeStep() {
                 {uploadStatus === 'uploading' ? 'Uploading...' : 'Upload PDF'}
               </Button>
               {uploadStatus === 'success' && fileName && (
-                <span className="flex items-center gap-1.5 rounded-md border border-emerald-500/40 bg-slate-700 px-2.5 py-1 text-sm text-slate-200">
+                <span className="flex items-center gap-1.5 rounded-md border border-emerald-500/40 bg-muted px-2.5 py-1 text-sm text-foreground">
                   <span className="max-w-[160px] truncate">{fileName}</span>
                   <span className="text-emerald-400">✓</span>
                 </span>
@@ -110,13 +110,13 @@ export function AnalyzeStep() {
             )}
           </div>
           <div className="space-y-2">
-            <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
+            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Target Role
             </label>
             <Input
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="border-slate-700 bg-slate-800 text-slate-100"
+              className="border-border bg-card text-foreground"
             />
           </div>
         </div>
@@ -125,15 +125,15 @@ export function AnalyzeStep() {
       {uploadStatus === 'uploading' && <LoadingSpinner label="Analyzing resume with AI..." />}
 
       {hasResult && session.profile && session.seniority && (
-        <div className="space-y-3 rounded-lg border border-emerald-500/30 bg-slate-800 p-4">
+        <div className="space-y-3 rounded-lg border border-emerald-500/30 bg-card p-4">
           <div className="text-sm font-semibold text-emerald-400">✓ Analysis Complete</div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-medium text-slate-100">{session.profile.candidateName}</span>
+            <span className="font-medium text-foreground">{session.profile.candidateName}</span>
             {session.profile.currentTitle && (
-              <span className="text-slate-400">· {session.profile.currentTitle}</span>
+              <span className="text-muted-foreground">· {session.profile.currentTitle}</span>
             )}
             {session.profile.yearsExperience != null && (
-              <span className="text-slate-400">· {session.profile.yearsExperience} yrs exp</span>
+              <span className="text-muted-foreground">· {session.profile.yearsExperience} yrs exp</span>
             )}
           </div>
           <div className="flex gap-3">
@@ -144,7 +144,7 @@ export function AnalyzeStep() {
             {session.profile.coreSkills.map((skill) => (
               <span
                 key={skill}
-                className="rounded-full bg-slate-700 px-2 py-0.5 text-xs text-slate-300"
+                className="rounded-full bg-muted px-2 py-0.5 text-xs text-foreground/80"
               >
                 {skill}
               </span>

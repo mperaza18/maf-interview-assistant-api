@@ -12,12 +12,12 @@ export function CandidateChips({ role, yearsExperience, topSkills }: CandidateCh
         {role}
       </span>
       {yearsExperience !== undefined && (
-        <span className="inline-flex items-center rounded-full bg-slate-700 px-3 py-1 text-xs font-medium text-slate-300">
+        <span className="inline-flex items-center rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground/80">
           {yearsExperience} yrs exp
         </span>
       )}
       {displaySkills && (
-        <span className="inline-flex items-center rounded-full bg-slate-700 px-3 py-1 text-xs font-medium text-slate-300">
+        <span className="inline-flex items-center rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground/80">
           {displaySkills}
         </span>
       )}

@@ -44,10 +44,10 @@ describe('Stepper', () => {
     expect(label.className).toContain('font-semibold')
   })
 
-  it('renders the active step label with white color and semi-bold weight', () => {
+  it('renders the active step label with foreground color and semi-bold weight', () => {
     render(<Stepper currentStep={2} />)
     const label = screen.getByText('Interview Plan')
-    expect(label.className).toContain('text-slate-100')
+    expect(label.className).toContain('text-foreground')
     expect(label.className).toContain('font-semibold')
   })
 })

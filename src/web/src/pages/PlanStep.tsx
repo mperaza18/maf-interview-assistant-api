@@ -63,9 +63,9 @@ export function PlanStep() {
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <h2 className="text-lg font-semibold text-slate-100">Interview Plan</h2>
+            <h2 className="text-lg font-semibold text-foreground">Interview Plan</h2>
             {session.plan && (
-              <span className="rounded-full bg-slate-700 px-2.5 py-0.5 text-xs font-medium text-slate-300">
+              <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-foreground/80">
                 {totalMinutes} min total
               </span>
             )}
@@ -82,7 +82,7 @@ export function PlanStep() {
           variant="ghost"
           size="sm"
           onClick={() => dispatch({ type: 'SET_STEP', step: 1 })}
-          className="text-slate-400 hover:text-slate-200"
+          className="text-muted-foreground hover:text-foreground"
         >
           ← Back
         </Button>
@@ -94,21 +94,21 @@ export function PlanStep() {
       {session.plan && (
         <>
           {/* Metadata card */}
-          <div className="rounded-xl border border-slate-700 bg-slate-800/80 px-6 py-4 flex items-center gap-0">
+          <div className="rounded-xl border border-border bg-card/80 px-6 py-4 flex items-center gap-0">
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Target Role</p>
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Target Role</p>
               <p className="text-[15px] font-semibold text-white mt-1 truncate">{session.role}</p>
             </div>
-            <div className="w-px h-12 bg-slate-700 mx-6 shrink-0" />
+            <div className="w-px h-12 bg-border mx-6 shrink-0" />
             <div className="shrink-0">
-              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Difficulty</p>
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Difficulty</p>
               <span className="mt-1 inline-block bg-amber-900/50 text-amber-400 text-xs font-semibold px-3 py-1 rounded-md">
                 {session.plan.level}
               </span>
             </div>
-            <div className="w-px h-12 bg-slate-700 mx-6 shrink-0" />
+            <div className="w-px h-12 bg-border mx-6 shrink-0" />
             <div className="shrink-0">
-              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Questions</p>
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Questions</p>
               <p className="text-[15px] font-semibold text-white mt-1">{totalQuestions} questions</p>
             </div>
           </div>
@@ -120,19 +120,19 @@ export function PlanStep() {
               return (
                 <div
                   key={i}
-                  className="rounded-xl border border-slate-700 bg-slate-800/80 p-5 border-l-[3px]"
+                  className="rounded-xl border border-border bg-card/80 p-5 border-l-[3px]"
                   style={{ borderLeftColor: color }}
                 >
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-sm" style={{ color }}>{icon}</span>
                     <span className="text-sm font-semibold" style={{ color }}>{round.name}</span>
-                    <span className="text-xs text-slate-500">({round.durationMinutes} min)</span>
+                    <span className="text-xs text-muted-foreground">({round.durationMinutes} min)</span>
                   </div>
                   <ol className="space-y-2">
                     {round.questions.map((q, j) => (
                       <li key={j} className="flex gap-3 text-sm">
-                        <span className="shrink-0 text-slate-600 w-4">{j + 1}.</span>
-                        <span className="text-slate-400">{q}</span>
+                        <span className="shrink-0 text-muted-foreground/60 w-4">{j + 1}.</span>
+                        <span className="text-muted-foreground">{q}</span>
                       </li>
                     ))}
                   </ol>
@@ -142,14 +142,14 @@ export function PlanStep() {
           </div>
 
           {/* Revise bar */}
-          <div className="rounded-lg border border-indigo-500/40 bg-gradient-to-br from-indigo-950/60 to-slate-800/80 p-4 space-y-3">
+          <div className="rounded-lg border border-indigo-500/40 bg-gradient-to-br from-indigo-950/60 to-card/80 p-4 space-y-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-indigo-400">✦ Revise Plan</p>
             <div className="flex gap-2">
               <Input
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 placeholder='Revise plan, e.g. "add more system design questions"'
-                className="border-slate-700 bg-slate-800 text-slate-100 placeholder:text-slate-500"
+                className="border-border bg-card text-foreground placeholder:text-muted-foreground"
                 onKeyDown={(e) => e.key === 'Enter' && handleRevise()}
               />
               <Button
@@ -166,7 +166,7 @@ export function PlanStep() {
           <div className="flex justify-end gap-3">
             <Button
               variant="outline"
-              className="border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+              className="border-border text-muted-foreground hover:bg-card hover:text-foreground"
               disabled
             >
               Edit Questions
