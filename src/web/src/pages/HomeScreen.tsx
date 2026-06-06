@@ -1,6 +1,9 @@
+import { useState } from 'react'
+import { Trash2 } from 'lucide-react'
 import { useSession } from '@/store/SessionContext'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { ConfirmDeleteDialog } from '@/components/ui/ConfirmDeleteDialog'
 import type { Session } from '@/types'
 
 function statusBadge(session: Session) {
@@ -14,8 +17,18 @@ interface HomeScreenProps {
 }
 
 export function HomeScreen({ onNew, onLoad }: HomeScreenProps) {
-  const { repository } = useSession()
-  const sessions = repository.list()
+  const { dispatch, repository } = useSession()
+  const [sessions, setSessions] = useState(() => repository.list())
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null)
+
+  const pendingSession = sessions.find(s => s.id === pendingDeleteId) ?? null
+
+  function handleDelete(id: string) {
+    repository.delete(id)
+    setSessions(prev => prev.filter(s => s.id !== id))
+    dispatch({ type: 'DELETE_SESSION', id })
+    setPendingDeleteId(null)
+  }
 
   return (
     <div className="space-y-6">
@@ -39,7 +52,7 @@ export function HomeScreen({ onNew, onLoad }: HomeScreenProps) {
           {sessions.map((session) => (
             <div
               key={session.id}
-              className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3"
+              className="group flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3"
             >
               <div className="space-y-0.5">
                 <div className="flex items-center gap-2">
@@ -54,7 +67,7 @@ export function HomeScreen({ onNew, onLoad }: HomeScreenProps) {
                   {session.currentStep} of 4
                 </div>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 {statusBadge(session)}
                 <Button
                   variant="ghost"
@@ -64,11 +77,25 @@ export function HomeScreen({ onNew, onLoad }: HomeScreenProps) {
                 >
                   {session.evaluation ? 'View →' : 'Resume →'}
                 </Button>
+                <button
+                  aria-label="Delete session"
+                  onClick={(e) => { e.stopPropagation(); setPendingDeleteId(session.id) }}
+                  className="rounded p-1 text-muted-foreground opacity-100 transition-opacity hover:text-destructive md:opacity-0 md:group-hover:opacity-100"
+                >
+                  <Trash2 size={16} />
+                </button>
               </div>
             </div>
           ))}
         </div>
       )}
+
+      <ConfirmDeleteDialog
+        open={pendingDeleteId !== null}
+        candidateName={pendingSession?.candidateName}
+        onCancel={() => setPendingDeleteId(null)}
+        onConfirm={() => handleDelete(pendingDeleteId!)}
+      />
     </div>
   )
 }

@@ -10,6 +10,7 @@ export type SessionAction =
   | { type: 'SET_EVALUATION'; evaluation: EvaluationResult }
   | { type: 'SET_STEP'; step: 1 | 2 | 3 | 4 }
   | { type: 'CLEAR_SESSION' }
+  | { type: 'DELETE_SESSION'; id: string }
 
 export interface SessionState {
   current: Session | null
@@ -61,6 +62,10 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
 
     case 'CLEAR_SESSION':
       return { current: null }
+
+    case 'DELETE_SESSION':
+      if (state.current?.id === action.id) return { current: null }
+      return state
 
     default:
       return state
