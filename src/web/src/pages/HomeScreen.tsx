@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { Trash2 } from 'lucide-react'
 import { useSession } from '@/store/SessionContext'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { ConfirmDeleteDialog } from '@/components/ui/ConfirmDeleteDialog'
 import type { Session } from '@/types'
 
 function statusBadge(session: Session) {
-  if (session.evaluation) return <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Complete</Badge>
-  return <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30">In Progress</Badge>
+  if (session.evaluation)
+    return <span className="inline-flex items-center rounded-full border border-emerald-500/30 bg-emerald-500/20 px-2.5 py-0.5 text-xs font-medium text-emerald-400">Complete</span>
+  return <span className="inline-flex items-center rounded-full border border-amber-500/30 bg-amber-500/20 px-2.5 py-0.5 text-xs font-medium text-amber-400">In Progress</span>
 }
 
 interface HomeScreenProps {
@@ -52,22 +52,29 @@ export function HomeScreen({ onNew, onLoad }: HomeScreenProps) {
           {sessions.map((session) => (
             <div
               key={session.id}
-              className="group flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3"
+              className="group flex items-center gap-4 rounded-lg border border-border bg-card px-4 py-3"
             >
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium text-foreground">
+              <div className="min-w-0 flex-1 space-y-0.5">
+                <div className="flex items-center gap-2 overflow-hidden">
+                  <span className="truncate font-medium text-foreground">
                     {session.candidateName || 'Unnamed Candidate'}
                   </span>
-                  <span className="text-muted-foreground">·</span>
-                  <span className="text-sm text-muted-foreground">{session.role}</span>
+                  <span className="shrink-0 text-muted-foreground">·</span>
+                  <span className="shrink-0 text-sm text-muted-foreground">{session.role}</span>
                 </div>
-                <div className="text-xs text-muted-foreground">
+                <div className="truncate text-xs text-muted-foreground">
                   Last updated: {new Date(session.updatedAt).toLocaleDateString()} · Step{' '}
                   {session.currentStep} of 4
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex shrink-0 items-center gap-3">
+                <button
+                  aria-label="Delete session"
+                  onClick={(e) => { e.stopPropagation(); setPendingDeleteId(session.id) }}
+                  className="flex items-center justify-center rounded p-1 text-muted-foreground hover:text-destructive"
+                >
+                  <Trash2 size={16} />
+                </button>
                 {statusBadge(session)}
                 <Button
                   variant="ghost"
@@ -77,13 +84,6 @@ export function HomeScreen({ onNew, onLoad }: HomeScreenProps) {
                 >
                   {session.evaluation ? 'View →' : 'Resume →'}
                 </Button>
-                <button
-                  aria-label="Delete session"
-                  onClick={(e) => { e.stopPropagation(); setPendingDeleteId(session.id) }}
-                  className="rounded p-1 text-muted-foreground opacity-100 transition-opacity hover:text-destructive md:opacity-0 md:group-hover:opacity-100"
-                >
-                  <Trash2 size={16} />
-                </button>
               </div>
             </div>
           ))}
