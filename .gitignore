@@ -12,7 +12,6 @@ obj/
 ## Secrets — never commit real keys
 appsettings.*.json
 !appsettings.json
-!appsettings.Development.json
 *.pfx
 *.key
 

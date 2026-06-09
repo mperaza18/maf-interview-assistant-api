@@ -6,3 +6,4 @@ coverage/
 .env.*.local
 .DS_Store
 vite.config.ts.timestamp-*
+tsconfig.tsbuildinfo
