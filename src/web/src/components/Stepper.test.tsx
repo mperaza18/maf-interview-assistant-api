@@ -50,4 +50,17 @@ describe('Stepper', () => {
     expect(label.className).toContain('text-foreground')
     expect(label.className).toContain('font-semibold')
   })
+
+  it('renders custom steps when the steps prop is provided', () => {
+    const JD_STEPS: Array<[number, string]> = [
+      [1, 'Upload JD'],
+      [2, 'Analyze'],
+      [3, 'Match Candidates'],
+    ]
+    render(<Stepper currentStep={1} steps={JD_STEPS} />)
+    expect(screen.getByText('Upload JD')).toBeInTheDocument()
+    expect(screen.getByText('Analyze')).toBeInTheDocument()
+    expect(screen.getByText('Match Candidates')).toBeInTheDocument()
+    expect(screen.queryByText('Resume Analysis')).not.toBeInTheDocument()
+  })
 })

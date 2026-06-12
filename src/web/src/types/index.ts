@@ -63,3 +63,11 @@ export interface Session {
   roundNotes?: Record<string, string>
   evaluation?: EvaluationResult
 }
+
+export interface JobDescriptionUpload {
+  id: string
+  fileName: string
+  sizeBytes: number
+  status: string
+  uploadedAt: string
+}

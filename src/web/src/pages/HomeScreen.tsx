@@ -14,9 +14,10 @@ function statusBadge(session: Session) {
 interface HomeScreenProps {
   onNew: () => void
   onLoad: (id: string) => void
+  onNewJdMatch: () => void
 }
 
-export function HomeScreen({ onNew, onLoad }: HomeScreenProps) {
+export function HomeScreen({ onNew, onLoad, onNewJdMatch }: HomeScreenProps) {
   const { dispatch, repository } = useSession()
   const [sessions, setSessions] = useState(() => repository.list())
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null)
@@ -37,15 +38,24 @@ export function HomeScreen({ onNew, onLoad }: HomeScreenProps) {
           <h1 className="text-2xl font-bold text-foreground">Interview Sessions</h1>
           <p className="text-sm text-muted-foreground mt-1">Resume a past session or start a new one</p>
         </div>
-        <Button onClick={onNew} className="bg-indigo-600 hover:bg-indigo-700">
-          + New Interview
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={onNewJdMatch}
+            className="border-indigo-500/40 text-indigo-400 hover:text-indigo-300"
+          >
+            + New JD Match
+          </Button>
+          <Button onClick={onNew} className="bg-indigo-600 hover:bg-indigo-700">
+            + New Interview
+          </Button>
+        </div>
       </div>
 
       {sessions.length === 0 ? (
         <div className="rounded-lg border border-border bg-card/50 py-16 text-center">
           <p className="text-muted-foreground">No sessions yet.</p>
-          <p className="text-sm text-muted-foreground mt-1">Click "New Interview" to get started.</p>
+          <p className="text-sm text-muted-foreground mt-1">Start a new interview or JD match to get started.</p>
         </div>
       ) : (
         <div className="space-y-3">

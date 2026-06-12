@@ -9,6 +9,8 @@ builder.Services.AddControllers();
 // Agents are thread-safe and expensive to construct — singletons are appropriate for a demo/dev setup.
 builder.Services.AddSingleton<IAgentRunner, JsonAgentRunner>();
 builder.Services.AddSingleton<IInterviewService, InterviewService>();
+builder.Services.AddSingleton<IJdParsingService, JdParsingService>();
+builder.Services.AddSingleton<IJobDescriptionStore, FileSystemJobDescriptionStore>();
 
 // Swagger / OpenAPI
 builder.Services.AddEndpointsApiExplorer();
