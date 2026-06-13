@@ -54,11 +54,11 @@ The Figma redesign reframes the entire app inside a new shell: a fixed 240px lef
 
 ```text
 <AppShell>                        // layout: sidebar + <Outlet/>
-  index            → <Navigate to="/dashboard" />
-  /dashboard       → <DashboardPage />     // = current HomeScreen
+  index            → <Navigate to="/interviews" replace />
+  /dashboard       → <Placeholder title="Dashboard" />
   /jobs            → <JobsPage />          // JdMatchProvider + JdMatchFlow
   /candidates      → <Placeholder title="Candidate Matches" />
-  /interviews      → <InterviewsPage />    // Stepper + 4 wizard steps
+  /interviews      → <InterviewsPage />    // Session list + wizard steps
   /settings        → <Placeholder title="Settings" />
   *                → <Navigate to="/dashboard" />
 </AppShell>
