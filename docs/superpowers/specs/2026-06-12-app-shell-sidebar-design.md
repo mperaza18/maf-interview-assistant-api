@@ -36,10 +36,10 @@ The Figma redesign reframes the entire app inside a new shell: a fixed 240px lef
 
 | Sidebar item | Route | Content | Icon (lucide) |
 |---|---|---|---|
-| Dashboard | `/dashboard` | Landing / home — today's `HomeScreen` (session list + entry points) | `LayoutDashboard` |
+| Dashboard | `/dashboard` | Coming-soon placeholder | `LayoutDashboard` |
 | Jobs & JDs | `/jobs` | JD Matching flow (`JdMatchProvider` + `JdMatchFlow`) | `Briefcase` |
 | Candidates | `/candidates` | Placeholder titled "Candidate Matches" (real screen = KAN-26) | `Users` |
-| Interviews | `/interviews` | Interview wizard (`Stepper` + Analyze→Plan→Session→Evaluate) | `ClipboardList` |
+| Interviews | `/interviews` | Session list + interview wizard (`Stepper` + Analyze→Plan→Session→Evaluate) | `ClipboardList` |
 | Settings | `/settings` | "Coming soon" placeholder | `Settings` |
 
 `/` redirects to `/dashboard`.
