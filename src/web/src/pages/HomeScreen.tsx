@@ -38,7 +38,7 @@ export function HomeScreen({ onNew, onLoad }: HomeScreenProps) {
           <p className="text-sm text-muted-foreground mt-1">Resume a past session or start a new one</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={onNew} className="bg-indigo-600 hover:bg-indigo-700">
+          <Button onClick={onNew}>
             + New Interview
           </Button>
         </div>
