@@ -42,7 +42,7 @@ The Figma redesign reframes the entire app inside a new shell: a fixed 240px lef
 | Interviews | `/interviews` | Session list + interview wizard (`Stepper` + Analyze→Plan→Session→Evaluate) | `ClipboardList` |
 | Settings | `/settings` | "Coming soon" placeholder | `Settings` |
 
-`/` redirects to `/dashboard`.
+`/` redirects to `/interviews`.
 
 ## Architecture
 
