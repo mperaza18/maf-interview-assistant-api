@@ -46,7 +46,10 @@ public sealed class JobDescriptionController : ControllerBase
         if (file.Length > MaxFileSizeBytes)
             return BadRequest(ProblemDetailsFor("File exceeds the 10 MB limit."));
 
-        _logger.LogInformation("Uploading JD PDF: {FileName} ({SizeBytes} bytes)", file.FileName, file.Length);
+        _logger.LogInformation(
+            "Uploading JD PDF: {FileName} ({SizeBytes} bytes)",
+            Path.GetFileName(file.FileName),
+            file.Length);
 
         using var ms = new MemoryStream();
         await file.CopyToAsync(ms, ct);
