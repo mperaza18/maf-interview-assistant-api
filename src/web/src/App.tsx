@@ -5,7 +5,6 @@ import { SessionContext } from '@/store/SessionContext'
 import { sessionReducer, initialState } from '@/store/sessionReducer'
 import { LocalStorageSessionRepository } from '@/repositories/LocalStorageSessionRepository'
 import { AppShell } from '@/components/shell/AppShell'
-import { DashboardPage } from '@/pages/DashboardPage'
 import { JobsPage } from '@/pages/JobsPage'
 import { InterviewsPage } from '@/pages/InterviewsPage'
 import { Placeholder } from '@/components/shell/Placeholder'
@@ -25,8 +24,8 @@ export default function App() {
       <SessionContext.Provider value={{ state, dispatch, repository }}>
         <Routes>
           <Route element={<AppShell />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route index element={<Navigate to="/interviews" replace />} />
+            <Route path="/dashboard" element={<Placeholder title="Dashboard" />} />
             <Route path="/jobs" element={<JobsPage />} />
             <Route
               path="/candidates"
@@ -39,7 +38,7 @@ export default function App() {
             />
             <Route path="/interviews" element={<InterviewsPage />} />
             <Route path="/settings" element={<Placeholder title="Settings" />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/interviews" replace />} />
           </Route>
         </Routes>
       </SessionContext.Provider>

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import type { Dispatch } from 'react'
 import { render, screen } from '@testing-library/react'
-import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom'
 import { SessionContext } from '@/store/SessionContext'
 import { InterviewsPage } from './InterviewsPage'
 import type { Session } from '@/types'
@@ -25,10 +25,7 @@ function renderInterviews(state: SessionState) {
   render(
     <SessionContext.Provider value={{ state, dispatch, repository }}>
       <MemoryRouter initialEntries={['/interviews']}>
-        <Routes>
-          <Route path="/interviews" element={<InterviewsPage />} />
-          <Route path="/dashboard" element={<div>Dashboard content</div>} />
-        </Routes>
+        <InterviewsPage />
       </MemoryRouter>
     </SessionContext.Provider>,
   )
@@ -40,8 +37,13 @@ describe('InterviewsPage', () => {
     expect(screen.getByText('Resume Analysis')).toBeInTheDocument()
   })
 
-  it('redirects to the dashboard when there is no active session', () => {
+  it('renders the session list when there is no active session', () => {
     renderInterviews({ current: null })
-    expect(screen.getByText('Dashboard content')).toBeInTheDocument()
+    expect(screen.getByText('Interview Sessions')).toBeInTheDocument()
+  })
+
+  it('does not show the New JD Match button in the session list', () => {
+    renderInterviews({ current: null })
+    expect(screen.queryByText('+ New JD Match')).not.toBeInTheDocument()
   })
 })
