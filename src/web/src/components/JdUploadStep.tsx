@@ -19,9 +19,17 @@ function validate(file: File): string | null {
 
 function mapError(err: unknown): string {
   if (err instanceof ApiError) {
-    if (err.status === 400) return 'Please select a valid PDF file.'
     if (err.status === 413) return 'File exceeds the 10 MB limit.'
     if (err.status === 422) return "This PDF doesn't contain readable text. Try a text-based PDF."
+    if (err.status === 400) {
+      try {
+        const pd = JSON.parse(err.body) as { detail?: unknown }
+        if (typeof pd.detail === 'string' && pd.detail.includes('10 MB')) return 'File exceeds the 10 MB limit.'
+      } catch {
+        // ignore non-JSON bodies
+      }
+      return 'Please select a valid PDF file.'
+    }
   }
   return 'Upload failed. Please try again.'
 }
