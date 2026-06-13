@@ -14,10 +14,9 @@ function statusBadge(session: Session) {
 interface HomeScreenProps {
   onNew: () => void
   onLoad: (id: string) => void
-  onNewJdMatch: () => void
 }
 
-export function HomeScreen({ onNew, onLoad, onNewJdMatch }: HomeScreenProps) {
+export function HomeScreen({ onNew, onLoad }: HomeScreenProps) {
   const { dispatch, repository } = useSession()
   const [sessions, setSessions] = useState(() => repository.list())
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null)
@@ -39,14 +38,7 @@ export function HomeScreen({ onNew, onLoad, onNewJdMatch }: HomeScreenProps) {
           <p className="text-sm text-muted-foreground mt-1">Resume a past session or start a new one</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={onNewJdMatch}
-            className="border-indigo-500/40 text-indigo-400 hover:text-indigo-300"
-          >
-            + New JD Match
-          </Button>
-          <Button onClick={onNew} className="bg-indigo-600 hover:bg-indigo-700">
+          <Button onClick={onNew}>
             + New Interview
           </Button>
         </div>

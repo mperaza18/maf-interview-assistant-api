@@ -39,6 +39,13 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar-bg))',
+          border: 'hsl(var(--sidebar-border))',
+          'active-bg': 'hsl(var(--sidebar-active-bg))',
+          'active-fg': 'hsl(var(--sidebar-active-fg))',
+          'muted-fg': 'hsl(var(--sidebar-muted-fg))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
