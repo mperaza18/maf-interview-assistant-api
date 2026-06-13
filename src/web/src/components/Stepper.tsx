@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 
-const STEPS: [1 | 2 | 3 | 4, string][] = [
+const DEFAULT_STEPS: Array<[number, string]> = [
   [1, 'Resume Analysis'],
   [2, 'Interview Plan'],
   [3, 'Live Session'],
@@ -8,16 +8,17 @@ const STEPS: [1 | 2 | 3 | 4, string][] = [
 ]
 
 interface StepperProps {
-  currentStep: 1 | 2 | 3 | 4
-  onStepClick?: (step: 1 | 2 | 3 | 4) => void
+  currentStep: number
+  steps?: Array<[number, string]>
+  onStepClick?: (step: number) => void
 }
 
-export function Stepper({ currentStep, onStepClick }: StepperProps) {
+export function Stepper({ currentStep, steps = DEFAULT_STEPS, onStepClick }: StepperProps) {
   const circleBase = 'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors'
 
   return (
     <div className="flex items-center">
-      {STEPS.map(([step, label], i) => {
+      {steps.map(([step, label], i) => {
         const isCompleted = step < currentStep
         const isActive = step === currentStep
         return (
@@ -60,7 +61,7 @@ export function Stepper({ currentStep, onStepClick }: StepperProps) {
                 {label}
               </span>
             </div>
-            {i < STEPS.length - 1 && (
+            {i < steps.length - 1 && (
               <div
                 className={cn(
                   'h-0.5 w-12 md:w-20 mx-2 mb-4 transition-colors',

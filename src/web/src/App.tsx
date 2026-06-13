@@ -10,9 +10,11 @@ import { SessionStep } from '@/pages/SessionStep'
 import { EvaluationStep } from '@/pages/EvaluationStep'
 import { Stepper } from '@/components/Stepper'
 import { Navbar } from '@/components/Navbar'
+import { JdMatchProvider } from '@/store/JdMatchContext'
+import { JdMatchFlow } from '@/pages/JdMatchFlow'
 import type { Session } from '@/types'
 
-type View = 'home' | 'wizard'
+type View = 'home' | 'wizard' | 'jdMatch'
 
 export default function App() {
   const [state, dispatch] = useReducer(sessionReducer, initialState)
@@ -60,14 +62,20 @@ export default function App() {
       <SessionContext.Provider value={{ state, dispatch, repository }}>
         <div className="min-h-screen bg-background text-foreground">
           <div className="mx-auto max-w-[760px] px-4 py-8">
-            <Navbar onBack={view === 'wizard' ? handleBackToHome : undefined} />
-            {view === 'home' ? (
-              <HomeScreen onNew={handleNew} onLoad={handleLoad} />
-            ) : (
+            <Navbar onBack={view !== 'home' ? handleBackToHome : undefined} />
+            {view === 'home' && (
+              <HomeScreen onNew={handleNew} onLoad={handleLoad} onNewJdMatch={() => setView('jdMatch')} />
+            )}
+            {view === 'jdMatch' && (
+              <JdMatchProvider>
+                <JdMatchFlow />
+              </JdMatchProvider>
+            )}
+            {view === 'wizard' && (
               <>
                 <Stepper
                   currentStep={step}
-                  onStepClick={(s) => dispatch({ type: 'SET_STEP', step: s })}
+                  onStepClick={(s) => dispatch({ type: 'SET_STEP', step: s as 1 | 2 | 3 | 4 })}
                 />
                 <div className="mt-8">
                   {step === 1 && <AnalyzeStep />}
