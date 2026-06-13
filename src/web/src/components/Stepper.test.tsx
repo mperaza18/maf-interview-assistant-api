@@ -51,6 +51,14 @@ describe('Stepper', () => {
     expect(label.className).toContain('font-semibold')
   })
 
+  it('renders the active step circle with primary brand colors', () => {
+    render(<Stepper currentStep={2} />)
+    const circle = screen.getByText('2')
+    expect(circle.className).toContain('bg-primary')
+    expect(circle.className).toContain('text-primary-foreground')
+    expect(circle.className).toContain('ring-primary')
+  })
+
   it('renders custom steps when the steps prop is provided', () => {
     const JD_STEPS: Array<[number, string]> = [
       [1, 'Upload JD'],

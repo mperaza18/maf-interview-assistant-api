@@ -41,7 +41,7 @@ export function Stepper({ currentStep, steps = DEFAULT_STEPS, onStepClick }: Ste
                   className={cn(
                     circleBase,
                     isCompleted && 'bg-green-400 text-white',
-                    isActive && 'bg-indigo-500 text-white ring-2 ring-indigo-400 ring-offset-2 ring-offset-background',
+                    isActive && 'bg-primary text-primary-foreground ring-2 ring-primary ring-offset-2 ring-offset-background',
                     !isCompleted && !isActive && 'bg-muted text-muted-foreground',
                   )}
                 >

@@ -60,13 +60,13 @@ The Figma redesign reframes the entire app inside a new shell: a fixed 240px lef
   /candidates      → <Placeholder title="Candidate Matches" />
   /interviews      → <InterviewsPage />    // Session list + wizard steps
   /settings        → <Placeholder title="Settings" />
-  *                → <Navigate to="/dashboard" />
+  *                → <Navigate to="/interviews" />
 </AppShell>
 ```
 
 - Active nav state derives from the current route via `NavLink`'s `isActive`.
 - The interview wizard's internal step stays reducer-driven (`state.current.currentStep`) exactly as today — routing changes only the top-level section, not the wizard's internal stepping.
-- **Guard:** navigating to `/interviews` with no active session redirects to `/dashboard` (the wizard requires a session created from the dashboard).
+- When navigating to `/interviews` with no active session, render the session list (`HomeScreen`) instead of redirecting.
 
 ### New components — `src/web/src/components/shell/`
 
@@ -107,7 +107,7 @@ Update `src/web/src/index.css` and (if needed) `tailwind.config.ts`:
 
 ## Error Handling / Edge Cases
 
-- Unknown route → redirect to `/dashboard`.
+- Unknown route → redirect to `/interviews`.
 - `/interviews` with no session in state → redirect to `/dashboard`.
 - Theme toggle continues to operate on `documentElement` `.dark` class via the existing `ThemeProvider`; placement moves but behavior is unchanged.
 - Session persistence (localStorage effect) is unaffected — it stays in `App.tsx` above the router.
