@@ -6,7 +6,7 @@ interface MatchScoreRingProps {
 }
 
 export function MatchScoreRing({ score }: MatchScoreRingProps) {
-  const offset = CIRCUMFERENCE * (1 - score / 100)
+  const offset = CIRCUMFERENCE * (1 - Math.min(100, Math.max(0, score)) / 100)
 
   return (
     <div className="relative" style={{ width: 80, height: 80 }}>
