@@ -64,6 +64,8 @@ export function JdUploadStep() {
     try {
       const result = await uploadJobDescription(file)
       dispatch({ type: 'SET_JOB_DESCRIPTION', jobDescription: result })
+      setAnalyzeStatus('idle')
+      setAnalyzeError(null)
       setStatus('idle')
     } catch (err) {
       setStatus('error')
