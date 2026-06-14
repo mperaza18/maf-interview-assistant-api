@@ -28,8 +28,7 @@ dotnet test --configuration Release --verbosity minimal
 ### Frontend (React)
 
 ```bash
-cd src/web
-npm test
+npm --prefix src/web test
 ```
 
 ## Behavior
