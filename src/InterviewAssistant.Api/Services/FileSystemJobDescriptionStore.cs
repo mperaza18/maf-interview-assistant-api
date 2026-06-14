@@ -53,7 +53,10 @@ public sealed class FileSystemJobDescriptionStore : IJobDescriptionStore
 
     public async Task SaveAnalysisAsync(string id, JdAnalysisResult result, CancellationToken ct)
     {
-        var path = Path.Combine(_root, id, "analysis.json");
+        var dir = Path.Combine(_root, id);
+        Directory.CreateDirectory(dir);
+
+        var path = Path.Combine(dir, "analysis.json");
         var json = JsonSerializer.Serialize(result, JsonOptions);
         await File.WriteAllTextAsync(path, json, ct);
     }
