@@ -16,7 +16,13 @@
       "Bash(git status*)",
       "Bash(git push*)",
       "Bash(gh repo*)",
-      "Bash(gh pr*)"
+      "Bash(gh pr*)",
+      "Bash(codex*)",
+      "Bash(cat /tmp/codex-step*)",
+      "Bash(echo*)",
+      "Bash(npm test*)",
+      "Bash(npm run*)",
+      "Bash(cd src/web*)"
     ]
   },
   "mcpServers": {
