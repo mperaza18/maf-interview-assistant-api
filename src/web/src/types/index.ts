@@ -71,3 +71,12 @@ export interface JobDescriptionUpload {
   status: string
   uploadedAt: string
 }
+
+export interface JdAnalysisResult {
+  score: number
+  seniority: string
+  mustHave: string[]
+  niceToHave: string[]
+  summary: string
+  confidence: number
+}

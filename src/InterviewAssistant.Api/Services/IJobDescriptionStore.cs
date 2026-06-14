@@ -7,4 +7,5 @@ public interface IJobDescriptionStore
 {
     Task SaveAsync(JobDescription jobDescription, byte[] pdfBytes, CancellationToken ct);
     Task<JobDescription?> GetAsync(string id, CancellationToken ct);
+    Task SaveAnalysisAsync(string id, JdAnalysisResult result, CancellationToken ct);
 }

@@ -4,7 +4,7 @@ import { JdUploadStep } from './JdUploadStep'
 import { JdMatchProvider } from '@/store/JdMatchContext'
 import { ApiError } from '@/api/interviewApi'
 import * as api from '@/api/jobDescriptionApi'
-import type { JobDescriptionUpload } from '@/types'
+import type { JobDescriptionUpload, JdAnalysisResult } from '@/types'
 
 vi.mock('@/api/jobDescriptionApi')
 
@@ -14,6 +14,15 @@ const mockUpload: JobDescriptionUpload = {
   sizeBytes: 253952, // 248 KB
   status: 'parsed',
   uploadedAt: '2026-06-11T12:00:00Z',
+}
+
+const mockAnalysis: JdAnalysisResult = {
+  score: 85,
+  seniority: 'Senior',
+  mustHave: ['C#', '.NET'],
+  niceToHave: ['Docker'],
+  summary: 'Backend role.',
+  confidence: 0.9,
 }
 
 function renderStep() {
@@ -60,7 +69,7 @@ describe('JdUploadStep', () => {
     expect(api.uploadJobDescription).not.toHaveBeenCalled()
   })
 
-  it('uploads a valid PDF and shows the parsed card with name, size, badge, and disabled CTA', async () => {
+  it('uploads a valid PDF and shows the parsed card with enabled Analyze button', async () => {
     vi.mocked(api.uploadJobDescription).mockResolvedValueOnce(mockUpload)
     renderStep()
     selectFile(new File(['%PDF-1.4'], 'senior-jd.pdf', { type: 'application/pdf' }))
@@ -68,7 +77,7 @@ describe('JdUploadStep', () => {
     await waitFor(() => expect(screen.getByText('senior-jd.pdf')).toBeInTheDocument())
     expect(screen.getByText(/248 KB/)).toBeInTheDocument()
     expect(screen.getByText(/Parsed/)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Analyze JD/ })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /Analyze JD/ })).not.toBeDisabled()
   })
 
   it('shows the 422 message when the PDF has no readable text', async () => {
@@ -90,6 +99,54 @@ describe('JdUploadStep', () => {
 
     await waitFor(() =>
       expect(screen.getByText('Upload failed. Please try again.')).toBeInTheDocument(),
+    )
+  })
+
+  it('shows "Analyzing JD…" and disables button while analyze is in progress', async () => {
+    vi.mocked(api.uploadJobDescription).mockResolvedValueOnce(mockUpload)
+    let resolveAnalyze!: (v: JdAnalysisResult) => void
+    vi.mocked(api.analyzeJobDescription).mockReturnValueOnce(
+      new Promise((r) => { resolveAnalyze = r }),
+    )
+    renderStep()
+    selectFile(new File(['%PDF-1.4'], 'jd.pdf', { type: 'application/pdf' }))
+    await waitFor(() => expect(screen.getByRole('button', { name: /Analyze JD/ })).toBeInTheDocument())
+
+    fireEvent.click(screen.getByRole('button', { name: /Analyze JD/ }))
+
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /Analyzing JD/ })).toBeDisabled(),
+    )
+
+    resolveAnalyze(mockAnalysis)
+  })
+
+  it('shows analyze error message when analysis fails', async () => {
+    vi.mocked(api.uploadJobDescription).mockResolvedValueOnce(mockUpload)
+    vi.mocked(api.analyzeJobDescription).mockRejectedValueOnce(new ApiError(500, 'boom'))
+    renderStep()
+    selectFile(new File(['%PDF-1.4'], 'jd.pdf', { type: 'application/pdf' }))
+    await waitFor(() => expect(screen.getByRole('button', { name: /Analyze JD/ })).toBeInTheDocument())
+
+    fireEvent.click(screen.getByRole('button', { name: /Analyze JD/ }))
+
+    await waitFor(() =>
+      expect(screen.getByText('Analysis failed. Please try again.')).toBeInTheDocument(),
+    )
+    expect(screen.getByRole('button', { name: /Analyze JD/ })).not.toBeDisabled()
+  })
+
+  it('calls analyzeJobDescription with the correct JD id', async () => {
+    vi.mocked(api.uploadJobDescription).mockResolvedValueOnce(mockUpload)
+    vi.mocked(api.analyzeJobDescription).mockResolvedValueOnce(mockAnalysis)
+    renderStep()
+    selectFile(new File(['%PDF-1.4'], 'jd.pdf', { type: 'application/pdf' }))
+    await waitFor(() => expect(screen.getByRole('button', { name: /Analyze JD/ })).toBeInTheDocument())
+
+    fireEvent.click(screen.getByRole('button', { name: /Analyze JD/ }))
+
+    await waitFor(() =>
+      expect(api.analyzeJobDescription).toHaveBeenCalledWith('abc-123'),
     )
   })
 })
