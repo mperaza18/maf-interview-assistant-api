@@ -33,7 +33,7 @@ When invoked, you will be given:
    codex --approval-mode auto-edit "$(cat /tmp/codex-step.md)"
    ```
 6. Run the quality gate for the affected stack:
-   - **Frontend:** `cd src/web && npm test`
+   - **Frontend:** `npm --prefix src/web test`
    - **Backend:** `dotnet test tests/InterviewAssistant.Api.Tests/ --configuration Release --verbosity minimal`
 7. Report back:
    - What files Codex created or changed (from `git diff --stat`)

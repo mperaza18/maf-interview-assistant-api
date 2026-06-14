@@ -17,12 +17,12 @@
       "Bash(git push*)",
       "Bash(gh repo*)",
       "Bash(gh pr*)",
-      "Bash(codex*)",
-      "Bash(cat /tmp/codex-step*)",
-      "Bash(echo*)",
-      "Bash(npm test*)",
-      "Bash(npm run*)",
-      "Bash(cd src/web*)"
+      "Bash(codex --approval-mode auto-edit *)",
+      "Bash(codex --help)",
+      "Bash(cat /tmp/codex-step.md)",
+      "Bash(npm --prefix src/web test)",
+      "Bash(npm --prefix src/web run build)",
+      "Bash(npm --prefix src/web run dev)"
     ]
   },
   "mcpServers": {

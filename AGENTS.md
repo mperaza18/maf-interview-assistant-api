@@ -60,7 +60,7 @@ dotnet test tests/InterviewAssistant.Api.Tests/ --configuration Release --verbos
 
 Frontend:
 ```bash
-cd src/web && npm test
+npm --prefix src/web test
 ```
 
 ## Backend Rules (when you touch .NET)
@@ -91,7 +91,7 @@ dotnet run --project src/InterviewAssistant.Api
 # → http://localhost:5001 (Swagger UI in dev)
 
 # Web
-cd src/web && npm run dev
+npm --prefix src/web run dev
 # → http://localhost:5173
 ```
 

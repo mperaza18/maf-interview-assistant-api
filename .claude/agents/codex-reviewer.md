@@ -31,7 +31,7 @@ Your job is to catch anything Codex commonly misses in this repo.
 - Run tests and include the result in your report:
   ```bash
   dotnet test tests/InterviewAssistant.Api.Tests/ --configuration Release --verbosity minimal
-  cd src/web && npm test
+  npm --prefix src/web test
   ```
 
 ### 4. Backend integration
