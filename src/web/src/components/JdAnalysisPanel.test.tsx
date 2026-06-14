@@ -52,6 +52,18 @@ describe('JdAnalysisPanel', () => {
     expect(screen.getByTestId('confidence-label')).toHaveTextContent('92%')
   })
 
+  it('clamps confidence above 100%', () => {
+    renderWithAnalysis({ ...mockResult, confidence: 1.4 })
+    expect(screen.getByText('Confidence: 100%')).toBeInTheDocument()
+    expect(screen.getByTestId('confidence-label')).toHaveTextContent('100%')
+  })
+
+  it('renders non-finite confidence as 0%', () => {
+    renderWithAnalysis({ ...mockResult, confidence: Number.NaN })
+    expect(screen.getByText('Confidence: 0%')).toBeInTheDocument()
+    expect(screen.getByTestId('confidence-label')).toHaveTextContent('0%')
+  })
+
   it('renders all must-have chips', () => {
     renderWithAnalysis(mockResult)
     const container = screen.getByTestId('must-have-chips')

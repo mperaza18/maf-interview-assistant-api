@@ -62,12 +62,19 @@ function getConfidenceColorScheme(confidence: number): ColorScheme {
   return 'red'
 }
 
+function clampConfidence(confidence: number): number {
+  if (!Number.isFinite(confidence)) return 0
+  return Math.min(Math.max(confidence, 0), 1)
+}
+
 export function ConfidenceBadge({ confidence }: { confidence: number }) {
+  const normalizedConfidence = clampConfidence(confidence)
+
   return (
     <StatBadge
       label="CONFIDENCE"
-      value={`${Math.round(confidence * 100)}%`}
-      colorScheme={getConfidenceColorScheme(confidence)}
+      value={`${Math.round(normalizedConfidence * 100)}%`}
+      colorScheme={getConfidenceColorScheme(normalizedConfidence)}
     />
   )
 }
