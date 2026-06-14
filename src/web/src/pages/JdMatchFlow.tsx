@@ -1,5 +1,6 @@
 import { Stepper } from '@/components/Stepper'
 import { JdUploadStep } from '@/components/JdUploadStep'
+import { JdAnalysisPanel } from '@/components/JdAnalysisPanel'
 import { useJdMatch } from '@/store/JdMatchContext'
 
 const JD_STEPS: Array<[number, string]> = [
@@ -21,6 +22,7 @@ export function JdMatchFlow() {
       </div>
       <Stepper currentStep={state.currentStep} steps={JD_STEPS} />
       {state.currentStep === 1 && <JdUploadStep />}
+      {state.currentStep === 2 && <JdAnalysisPanel />}
     </div>
   )
 }

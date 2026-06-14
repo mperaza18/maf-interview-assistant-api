@@ -71,6 +71,32 @@ public class FileSystemJobDescriptionStoreTests : IDisposable
         Assert.Null(loaded);
     }
 
+    [Fact]
+    public async Task SaveAnalysisAsync_WritesAnalysisJsonToCorrectPath()
+    {
+        var store = CreateStore();
+        var jd = SampleJd();
+        await store.SaveAsync(jd, new byte[] { 1 }, CancellationToken.None);
+
+        var result = new JdAnalysisResult
+        {
+            Score = 85,
+            Seniority = "Senior",
+            MustHave = ["C#", ".NET"],
+            NiceToHave = ["Docker"],
+            Summary = "A .NET backend role.",
+            Confidence = 0.9f
+        };
+
+        await store.SaveAnalysisAsync(jd.Id, result, CancellationToken.None);
+
+        var path = Path.Combine(_tempDir, jd.Id, "analysis.json");
+        Assert.True(File.Exists(path));
+        var json = await File.ReadAllTextAsync(path);
+        Assert.Contains("\"score\": 85", json);
+        Assert.Contains("\"seniority\": \"Senior\"", json);
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_tempDir)) Directory.Delete(_tempDir, recursive: true);

@@ -12,10 +12,12 @@ public class JobDescriptionControllerTests
 {
     private readonly Mock<IJdParsingService> _parser = new();
     private readonly Mock<IJobDescriptionStore> _store = new();
+    private readonly Mock<IJdAnalysisService> _analysisService = new();
 
     private JobDescriptionController CreateController() => new(
         _parser.Object,
         _store.Object,
+        _analysisService.Object,
         Mock.Of<ILogger<JobDescriptionController>>());
 
     private static Mock<IFormFile> CreateMockPdfFile(
@@ -142,5 +144,50 @@ public class JobDescriptionControllerTests
 
         Assert.IsType<NotFoundObjectResult>(result);
         _store.Verify(s => s.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Analyze_ValidIdAndJdFound_Returns200WithResult()
+    {
+        var id = Guid.NewGuid().ToString();
+        var jd = new JobDescription { Id = id, ExtractedText = "Senior .NET Engineer" };
+        var analysis = new JdAnalysisResult { Score = 85, Seniority = "Senior" };
+        _store.Setup(s => s.GetAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(jd);
+        _analysisService
+            .Setup(a => a.AnalyzeAsync("Senior .NET Engineer", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(analysis);
+
+        var result = await CreateController().Analyze(id, CancellationToken.None);
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var response = Assert.IsType<JdAnalysisResult>(ok.Value);
+        Assert.Equal(85, response.Score);
+        Assert.Equal("Senior", response.Seniority);
+        _store.Verify(
+            s => s.SaveAnalysisAsync(id, analysis, It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task Analyze_NonGuidId_Returns404WithoutHittingStore()
+    {
+        var result = await CreateController().Analyze("not-a-guid", CancellationToken.None);
+
+        Assert.IsType<NotFoundObjectResult>(result);
+        _store.Verify(s => s.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Analyze_JdNotFound_Returns404WithoutCallingService()
+    {
+        _store.Setup(s => s.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+              .ReturnsAsync((JobDescription?)null);
+
+        var result = await CreateController().Analyze(Guid.NewGuid().ToString(), CancellationToken.None);
+
+        Assert.IsType<NotFoundObjectResult>(result);
+        _analysisService.Verify(
+            a => a.AnalyzeAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 }

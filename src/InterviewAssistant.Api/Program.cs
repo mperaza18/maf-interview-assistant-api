@@ -11,6 +11,7 @@ builder.Services.AddSingleton<IAgentRunner, JsonAgentRunner>();
 builder.Services.AddSingleton<IInterviewService, InterviewService>();
 builder.Services.AddSingleton<IJdParsingService, JdParsingService>();
 builder.Services.AddSingleton<IJobDescriptionStore, FileSystemJobDescriptionStore>();
+builder.Services.AddSingleton<IJdAnalysisService, JdAnalysisService>();
 
 // Swagger / OpenAPI
 builder.Services.AddEndpointsApiExplorer();

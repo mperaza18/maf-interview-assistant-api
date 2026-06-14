@@ -50,4 +50,14 @@ public sealed class FileSystemJobDescriptionStore : IJobDescriptionStore
             return null;
         }
     }
+
+    public async Task SaveAnalysisAsync(string id, JdAnalysisResult result, CancellationToken ct)
+    {
+        var dir = Path.Combine(_root, id);
+        Directory.CreateDirectory(dir);
+
+        var path = Path.Combine(dir, "analysis.json");
+        var json = JsonSerializer.Serialize(result, JsonOptions);
+        await File.WriteAllTextAsync(path, json, ct);
+    }
 }

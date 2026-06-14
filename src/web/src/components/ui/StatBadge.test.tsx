@@ -64,4 +64,14 @@ describe('ConfidenceBadge', () => {
     render(<ConfidenceBadge confidence={0.95} />)
     expect(screen.getByText('95%')).toBeInTheDocument()
   })
+
+  it('clamps confidence above 100%', () => {
+    render(<ConfidenceBadge confidence={1.4} />)
+    expect(screen.getByText('100%')).toBeInTheDocument()
+  })
+
+  it('renders non-finite confidence as 0%', () => {
+    render(<ConfidenceBadge confidence={Number.NaN} />)
+    expect(screen.getByText('0%')).toBeInTheDocument()
+  })
 })

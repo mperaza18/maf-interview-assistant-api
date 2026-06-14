@@ -1,6 +1,7 @@
 using InterviewAssistant.Api.Models;
 using InterviewAssistant.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace InterviewAssistant.Api.Controllers;
 
@@ -13,15 +14,18 @@ public sealed class JobDescriptionController : ControllerBase
 
     private readonly IJdParsingService _parser;
     private readonly IJobDescriptionStore _store;
+    private readonly IJdAnalysisService _analysisService;
     private readonly ILogger<JobDescriptionController> _logger;
 
     public JobDescriptionController(
         IJdParsingService parser,
         IJobDescriptionStore store,
+        IJdAnalysisService analysisService,
         ILogger<JobDescriptionController> logger)
     {
         _parser = parser;
         _store = store;
+        _analysisService = analysisService;
         _logger = logger;
     }
 
@@ -113,6 +117,26 @@ public sealed class JobDescriptionController : ControllerBase
             UploadedAt = jobDescription.UploadedAtUtc,
             ExtractedText = jobDescription.ExtractedText
         });
+    }
+
+    // ─── POST /api/job-descriptions/{id}/analyze ─────────────────────────────
+
+    [HttpPost("{id}/analyze")]
+    [ProducesResponseType(typeof(JdAnalysisResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Analyze(string id, CancellationToken ct)
+    {
+        if (!Guid.TryParse(id, out _))
+            return NotFound(NotFoundProblem(id));
+
+        var jobDescription = await _store.GetAsync(id, ct);
+        if (jobDescription is null)
+            return NotFound(NotFoundProblem(id));
+
+        var result = await _analysisService.AnalyzeAsync(jobDescription.ExtractedText, ct);
+        await _store.SaveAnalysisAsync(id, result, ct);
+        return Ok(result);
     }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────

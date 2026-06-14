@@ -12,7 +12,7 @@ const upload: JobDescriptionUpload = {
 
 describe('jdMatchReducer', () => {
   it('starts with no job description on step 1', () => {
-    expect(initialJdMatchState).toEqual({ jobDescription: null, currentStep: 1 })
+    expect(initialJdMatchState).toEqual({ jobDescription: null, analysisResult: null, currentStep: 1 })
   })
 
   it('SET_JOB_DESCRIPTION stores the upload', () => {

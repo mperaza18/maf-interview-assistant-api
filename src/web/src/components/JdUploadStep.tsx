@@ -3,13 +3,14 @@ import { Upload, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useJdMatch } from '@/store/JdMatchContext'
-import { uploadJobDescription } from '@/api/jobDescriptionApi'
+import { uploadJobDescription, analyzeJobDescription } from '@/api/jobDescriptionApi'
 import { ApiError } from '@/api/interviewApi'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 
 const MAX_SIZE_BYTES = 10 * 1024 * 1024
 
 type UploadStatus = 'idle' | 'uploading' | 'error'
+type AnalyzeStatus = 'idle' | 'analyzing' | 'error'
 
 function validate(file: File): string | null {
   if (file.type !== 'application/pdf') return 'Only PDF files are supported.'
@@ -17,7 +18,7 @@ function validate(file: File): string | null {
   return null
 }
 
-function mapError(err: unknown): string {
+function mapUploadError(err: unknown): string {
   if (err instanceof ApiError) {
     if (err.status === 413) return 'File exceeds the 10 MB limit.'
     if (err.status === 422) return "This PDF doesn't contain readable text. Try a text-based PDF."
@@ -43,6 +44,8 @@ export function JdUploadStep() {
   const { state, dispatch } = useJdMatch()
   const [status, setStatus] = useState<UploadStatus>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [analyzeStatus, setAnalyzeStatus] = useState<AnalyzeStatus>('idle')
+  const [analyzeError, setAnalyzeError] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -61,10 +64,25 @@ export function JdUploadStep() {
     try {
       const result = await uploadJobDescription(file)
       dispatch({ type: 'SET_JOB_DESCRIPTION', jobDescription: result })
+      setAnalyzeStatus('idle')
+      setAnalyzeError(null)
       setStatus('idle')
     } catch (err) {
       setStatus('error')
-      setErrorMessage(mapError(err))
+      setErrorMessage(mapUploadError(err))
+    }
+  }
+
+  async function handleAnalyze() {
+    if (!jd) return
+    setAnalyzeStatus('analyzing')
+    setAnalyzeError(null)
+    try {
+      const result = await analyzeJobDescription(jd.id)
+      dispatch({ type: 'SET_ANALYSIS', analysisResult: result })
+    } catch {
+      setAnalyzeStatus('error')
+      setAnalyzeError('Analysis failed. Please try again.')
     }
   }
 
@@ -137,10 +155,17 @@ export function JdUploadStep() {
             <span className="inline-flex shrink-0 items-center rounded-full border border-emerald-500/30 bg-emerald-500/20 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
               ✓ Parsed
             </span>
-            <Button disabled className="shrink-0 bg-indigo-600 disabled:opacity-50">
-              Analyze JD →
+            <Button
+              onClick={() => void handleAnalyze()}
+              disabled={analyzeStatus === 'analyzing'}
+              className="shrink-0 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+            >
+              {analyzeStatus === 'analyzing' ? 'Analyzing JD…' : 'Analyze JD →'}
             </Button>
           </div>
+          {analyzeStatus === 'error' && analyzeError && (
+            <p className="text-sm text-red-400">{analyzeError}</p>
+          )}
           <p className="text-xs text-muted-foreground">
             SmartFitter will extract required skills, seniority and a JD quality score in the next step.
           </p>
